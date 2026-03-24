@@ -338,7 +338,7 @@ int main(){
 	for(int i=0;i<=sz-1;i++){
 		printf("%d ",arr[i]);
 	}
-	printf("haha\n");
+	printf("hehe\n");
 	return 0;
 }
 
