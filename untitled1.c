@@ -308,7 +308,8 @@ int main(){
 //		a = b;                  // b变成新的a
 //		b = s;                  // 余数变成新的b
 //		}
-//	printf("最大公约数为：%d\n", b);  // 最后b就是GCD	
+//	printf("最大公约数为：%d\n", b);  // 最后b就是GCD
+	printf("hehe\n");
 	return 0;
 }
 
