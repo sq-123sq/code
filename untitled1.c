@@ -31,6 +31,26 @@ int MAx(int g,int f){
 }
 //用宏的定义来计算两数和类似于上面函数
 #define MAX(x,y) (x+y)
+void change_dou_signal(int* arr,int sz){
+	int left=0;
+	int right=sz-1;
+	while(left<right){
+		while((arr[left]%2==1)&& left<right){
+			left++;
+		}
+		while((arr[right]%2==0)&& left<right){
+			right--;
+		}
+		if(left<right){
+			int tmp=arr[left];
+			arr[left]=arr[right];
+			arr[right]=tmp;
+			left++;
+			right--;
+			
+		}
+	}
+}
 int main(){
 //	int line=0;
 //	printf("加入比特\n");
@@ -309,7 +329,15 @@ int main(){
 //		b = s;                  // 余数变成新的b
 //		}
 //	printf("最大公约数为：%d\n", b);  // 最后b就是GCD
-	printf("hehe\n");
+	int arr[10]={0};
+	int sz=sizeof(arr)/sizeof(arr[0]);
+	for(int i=0;i<=sz-1;i++){
+		scanf("%d",&arr[i]);
+	}
+	change_dou_signal(arr,sz);
+	for(int i=0;i<=sz-1;i++){
+		printf("%d ",arr[i]);
+	}
 	return 0;
 }
 
