@@ -151,6 +151,18 @@ int main(){
 //			printf("输入错误，请重新输入\n");
 //		}
 //	}while(input);
-	
+	int nums[4]={0};
+	int target=0;
+		for(int i=0;i<4;i++){
+			scanf("%d",&nums[i]);
+		}
+		scanf("%d",&target);
+	for(int i=0;i<4;i++){
+		for(int j=i+1;j<4;j++){
+			if(nums[i]+nums[j]==target){
+				printf("%d %d",i,j);
+			}
+		}
+	}
 	return 0;
 }
