@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#define 
 void print(int (*p)[3],int c,int r){
 	for(int i=0;i<c;i++){
 		for(int j=0;j<r;j++){
@@ -33,6 +35,51 @@ void calc(int (*pa)(int,int)){
 	scanf("%d%d",&a,&b);
 	ret=pa(a,b);
 	printf("%d",ret);
+}
+void bublt(int arr[],int sz){
+	for(int i=0;i<sz-1;i++){
+		int flag=1;
+		for(int j=0;j<sz-i-1;j++){
+			if(arr[j]>arr[j+1]){
+				int tmp=arr[j];
+				arr[j]=arr[j+1];
+				arr[j+1]=tmp;
+				flag=0;
+			}
+		}
+		if(flag==1){
+			break;
+		}
+	}
+}
+//比较函数
+int cmp_int(const void* e1,const void* e2){
+	return *(int*)e1-*(int *)e2;
+}
+//交换函数
+void Swap(int width,char* buf1,char* buf2){
+	for(int i=0;i<width;i++){
+		char tmp=*buf1;
+		*buf1=*buf2;
+		*buf2=tmp;
+		buf1++;
+		buf2++;
+	}
+}
+//通用类型比较
+void bubble_sort(void* base,int sz,int width, int (*cmp)(const void* e1,const void* e2)){
+	for(int i=0;i<sz-1;i++){
+		int flag=1;
+		for(int j=0;j<sz-i-1;j++){
+			if(cmp((char*)base+j*width,(char*)base+(j+1)*width)>0){
+				Swap(width,(char*)base+j*width,(char*)base+(j+1)*width);
+				flag=0;
+			}
+		}
+		if(flag==1){
+			break;
+		}
+	}
 }
 int main(){
 //	int arr[3]={1,2,3};
@@ -151,18 +198,26 @@ int main(){
 //			printf("输入错误，请重新输入\n");
 //		}
 //	}while(input);
-	int nums[4]={0};
-	int target=0;
-		for(int i=0;i<4;i++){
-			scanf("%d",&nums[i]);
-		}
-		scanf("%d",&target);
-	for(int i=0;i<4;i++){
-		for(int j=i+1;j<4;j++){
-			if(nums[i]+nums[j]==target){
-				printf("%d %d",i,j);
-			}
-		}
+//	int nums[4]={0};
+//	int target=0;
+//		for(int i=0;i<4;i++){
+//			scanf("%d",&nums[i]);
+//		}
+//		scanf("%d",&target);
+//	for(int i=0;i<4;i++){
+//		for(int j=i+1;j<4;j++){
+//			if(nums[i]+nums[j]==target){
+//				printf("%d %d",i,j);
+//			}
+//		}
+//	}
+	int arr[]={9,8,7,6,5,4,2,1,0};
+	int sz=sizeof(arr)/sizeof(arr[0]);
+	//qsort(arr,sz,sizeof(arr[0]),cmp_int);//qsort有给任意数据类型排序的功能，只不过cmp_int比较函数需要自己写但可以利用宏自动生成各种比较函数
+	//bublt(arr,sz);
+	bubble_sort(arr,sz,sizeof(arr[0]),cmp_int);
+	for(int i=0;i<sz;i++){
+		printf("%d ",arr[i]);
 	}
 	return 0;
 }

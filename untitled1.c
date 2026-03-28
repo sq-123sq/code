@@ -329,16 +329,16 @@ int main(){
 //		b = s;                  // 余数变成新的b
 //		}
 //	printf("最大公约数为：%d\n", b);  // 最后b就是GCD
-	int arr[10]={0};
-	int sz=sizeof(arr)/sizeof(arr[0]);
-	for(int i=0;i<=sz-1;i++){
-		scanf("%d",&arr[i]);
-	}
-	change_dou_signal(arr,sz);
-	for(int i=0;i<=sz-1;i++){
-		printf("%d ",arr[i]);
-	}
-	printf("hehe\n");
+//	int arr[10]={0};
+//	int sz=sizeof(arr)/sizeof(arr[0]);
+//	for(int i=0;i<=sz-1;i++){
+//		scanf("%d",&arr[i]);
+//	}
+//	change_dou_signal(arr,sz);
+//	for(int i=0;i<=sz-1;i++){
+//		printf("%d ",arr[i]);
+//	}
+//	printf("hehe\n");
 	return 0;
 }
 
