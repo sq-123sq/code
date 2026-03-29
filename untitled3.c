@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define 
+#include <string.h>
+#include <assert.h>
 void print(int (*p)[3],int c,int r){
 	for(int i=0;i<c;i++){
 		for(int j=0;j<r;j++){
@@ -80,6 +81,37 @@ void bubble_sort(void* base,int sz,int width, int (*cmp)(const void* e1,const vo
 			break;
 		}
 	}
+}
+char* my_strcpy(char* dest,const char* sor){
+	char* ret=dest;
+	assert(dest&&sor);
+	while(*sor){
+		*dest=*sor;
+		dest++;
+		sor++;
+	}
+	*dest='\0';
+	return ret;
+}
+//size_t表示的是无符号整数只会返回正数
+size_t my_strlen(const char* str){
+	int count=0;
+	while(*str!='\0'){
+		str++;
+		count++;
+	}
+	return count;
+}
+int my_strcmp(const char* str1,const char* str2){
+	assert(str1&&str2);
+	while(*str1==*str2){
+		str1++;
+		str2++;
+		if(*str1=='\0'){//字符串相等都指向了\0
+			return 0;
+		}
+	}
+	return *(unsigned char*)str1-*(unsigned char*)str2;
 }
 int main(){
 //	int arr[3]={1,2,3};
@@ -211,13 +243,26 @@ int main(){
 //			}
 //		}
 //	}
-	int arr[]={9,8,7,6,5,4,2,1,0};
-	int sz=sizeof(arr)/sizeof(arr[0]);
-	//qsort(arr,sz,sizeof(arr[0]),cmp_int);//qsort有给任意数据类型排序的功能，只不过cmp_int比较函数需要自己写但可以利用宏自动生成各种比较函数
-	//bublt(arr,sz);
-	bubble_sort(arr,sz,sizeof(arr[0]),cmp_int);
-	for(int i=0;i<sz;i++){
-		printf("%d ",arr[i]);
-	}
+//	int arr[]={9,8,7,6,5,4,2,1,0};
+//	int sz=sizeof(arr)/sizeof(arr[0]);
+//	//qsort(arr,sz,sizeof(arr[0]),cmp_int);//qsort有给任意数据类型排序的功能，只不过cmp_int比较函数需要自己写但可以利用宏自动生成各种比较函数
+//	//bublt(arr,sz);
+//	bubble_sort(arr,sz,sizeof(arr[0]),cmp_int);
+//	for(int i=0;i<sz;i++){
+//		printf("%d ",arr[i]);
+//	}
+//	int a=0;
+//	scanf("%d",&a);
+	char arr1[]="abcdef";
+//	char arr2[20]={0};
+//	//strcpy(arr2,arr1);
+//	my_strcpy(arr2,arr1);
+//	printf("%s\n",arr2);
+	//int len=strlen(arr1);
+//	int len=my_strlen(arr1);
+//	printf("%d\n",len);
+	char arr2[]="zxcvbnm";
+	char arr3[90]={0};
+	printf("%d\n",my_strcmp(arr1,arr2));
 	return 0;
 }
