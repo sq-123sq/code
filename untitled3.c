@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <ctype.h>
 void print(int (*p)[3],int c,int r){
 	for(int i=0;i<c;i++){
 		for(int j=0;j<r;j++){
@@ -112,6 +113,32 @@ int my_strcmp(const char* str1,const char* str2){
 		}
 	}
 	return *(unsigned char*)str1-*(unsigned char*)str2;
+}
+void* my_memcpy(void* dest,void* str,size_t num){
+	assert(dest&&str);
+	void* ret=dest;
+	while(num--){
+		*(char*)dest=*(char*)str;
+		(char*)dest++;
+		(char*)str++;
+	}
+	return ret;
+}
+void* my_memmove(void* dest,void* str,size_t num){
+	assert(dest&&str);
+	void* ret=dest;
+	if(dest<str){
+			while(num--){
+				*(char*)dest=*(char*)str;
+				(char*)dest++;
+				(char*)str++;
+			}
+	}else{
+		while(num--){
+			*((char*)(dest+num))=*((char*)(str+num));
+		}
+	}
+	return ret;
 }
 int main(){
 //	int arr[3]={1,2,3};
@@ -253,7 +280,7 @@ int main(){
 //	}
 //	int a=0;
 //	scanf("%d",&a);
-	char arr1[]="abcdef";
+//	char arr1[]="abcdef";
 //	char arr2[20]={0};
 //	//strcpy(arr2,arr1);
 //	my_strcpy(arr2,arr1);
@@ -261,8 +288,33 @@ int main(){
 	//int len=strlen(arr1);
 //	int len=my_strlen(arr1);
 //	printf("%d\n",len);
-	char arr2[]="zxcvbnm";
-	char arr3[90]={0};
-	printf("%d\n",my_strcmp(arr1,arr2));
+//	char arr2[]="zxcvbnm";
+//	char arr3[90]={0};
+//	printf("%d\n",my_strcmp(arr1,arr2));
+//	char a[90]={0};
+//	strcat_s(a,90,"zzxcvbn");
+//	printf("%s\n",a);
+//    char arr[]="zxcvb";
+//	char* p=arr;
+//	int len=strlen(arr);
+//	for(int i=0;i<len;i++){
+//		*p=toupper(*p);
+//		p++;
+//	}
+//	printf("%s\n",arr);
+//	char arr[]="shit up";
+//	memset(arr,'f',4);//memset按一个字节更改
+//	printf("%s\n",arr);
+//	char arr1[]="asdfghjk";
+//	char arr2[90];
+//	//my_memcpy(arr2,arr1,5);
+//	memcpy(arr2,arr1,5);
+//	printf("%s\n",arr2);
+	int arr1[]={1,2,3,4,5,6,7,8,9};
+	//my_memmove(arr1+1,arr1,40);
+	memmove(arr1+1,arr1,40);
+	for(int i=0;i<9;i++){
+		printf("%d ",arr1[i]);
+	}
 	return 0;
 }
