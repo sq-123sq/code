@@ -140,6 +140,11 @@ void* my_memmove(void* dest,void* str,size_t num){
 	}
 	return ret;
 }
+//链表
+struct node{
+	int data;
+	struct node* next;
+};
 int main(){
 //	int arr[3]={1,2,3};
 //	int (*p)[3]=&arr;
@@ -310,11 +315,12 @@ int main(){
 //	//my_memcpy(arr2,arr1,5);
 //	memcpy(arr2,arr1,5);
 //	printf("%s\n",arr2);
-	int arr1[]={1,2,3,4,5,6,7,8,9};
-	//my_memmove(arr1+1,arr1,40);
-	memmove(arr1+1,arr1,40);
-	for(int i=0;i<9;i++){
-		printf("%d ",arr1[i]);
-	}
+//	int arr1[]={1,2,3,4,5,6,7,8,9};
+//	//my_memmove(arr1+1,arr1,40);
+//	memmove(arr1+1,arr1,20);
+//	for(int i=0;i<9;i++){
+//		printf("%d ",arr1[i]);
+//	}
+	
 	return 0;
 }
