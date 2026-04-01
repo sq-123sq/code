@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "contact.h"
 #include "contact.c"
 void menu(){

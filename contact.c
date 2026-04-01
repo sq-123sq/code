@@ -11,8 +11,24 @@ int findname(con* pc,char name[]){
 	}
 	return -1;
 }
+void menu2(){
+	printf("******************************\n");
+	printf("****1.name         2.sex******\n");
+	printf("****3.tel        4.address****\n");
+	printf("****0.exit********************\n");
+	printf("******************************\n");
+}
 int comp_by_name(const void* e1,const void* e2){
 	return strcmp(((peo*)e1)->name,((peo*)e2)->name);
+}
+int comp_by_sex(const void* e1,const void* e2){
+	return strcmp(((peo*)e1)->sex,((peo*)e2)->sex);
+}
+int comp_by_tel(const void* e1,const void* e2){
+	return strcmp(((peo*)e1)->tel,((peo*)e2)->tel);
+}
+int comp_by_address(const void* e1,const void* e2){
+	return strcmp(((peo*)e1)->addr,((peo*)e2)->addr);
 }
 void contactadd(con* pc){
 	assert(pc);
@@ -95,6 +111,32 @@ void contactchange(con* pc){
 }
 void contactqsout(con* pc){
 	assert(pc);
-	qsort(pc->data,pc->count,sizeof(peo),comp_by_name);
-	printf("排序成功\n");
+	int input1=0;
+		printf("请选择你想要的排序选项\n");
+		menu2();
+		scanf("%d",&input1);
+		switch (input1) {
+		case 1:
+			qsort(pc->data,pc->count,sizeof(peo),comp_by_name);
+			printf("排序成功\n");
+			break;
+		case 2:
+			qsort(pc->data,pc->count,sizeof(peo),comp_by_sex);
+			printf("排序成功\n");
+			break;
+		case 3:
+			qsort(pc->data,pc->count,sizeof(peo),comp_by_tel);
+			printf("排序成功\n");
+			break;
+		case 4:
+			qsort(pc->data,pc->count,sizeof(peo),comp_by_address);
+			printf("排序成功\n");
+			break;
+		case 0:
+			printf("退出排序程序\n");
+			break;
+		default:
+			printf("输入错误\n");
+			break;
+		}
 }
