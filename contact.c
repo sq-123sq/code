@@ -112,6 +112,7 @@ void contactchange(con* pc){
 void contactqsout(con* pc){
 	assert(pc);
 	int input1=0;
+	    printf("程序开始\n");
 		printf("请选择你想要的排序选项\n");
 		menu2();
 		scanf("%d",&input1);
