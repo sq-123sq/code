@@ -36,6 +36,8 @@ int main() {
 			contactqsout(&c);
 			break;
 		case 0:
+			savecontact(&c);
+			clean_all(&c);
 			printf("ÍË³ö³ÌÐò\n");
 			break;
 		default:

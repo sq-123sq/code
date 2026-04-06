@@ -118,17 +118,94 @@
 //	pf = NULL;
 //	return 0;
 //}
-int main() {
-	FILE* pf = fopen("test.txt", "r");
-	if (pf == NULL) {
-		printf("%s\n", strerror(errno));
-		return 1;
-	}
-	int c=0;
-	while ((c = fgetc(pf)) != EOF) {
-		putchar(c);
-	}
-	fclose(pf);
-	pf = NULL;
-	return 0;
-}
+//int main() {
+//	FILE* pf = fopen("test.txt", "r");
+//	if (pf == NULL) {
+//		printf("%s\n", strerror(errno));
+//		return 1;
+//	}
+//	int c=0;
+//	while ((c = fgetc(pf)) != EOF) {
+//		putchar(c);//打印单个字符%c也可以打印字符
+//	}
+//	fclose(pf);
+//	pf = NULL;
+//	return 0;
+//}
+//int main() {
+//	FILE* pf = fopen("test.txt", "r");
+//	if (pf == NULL) {
+//		printf("%s\n", strerror(errno));
+//		return 1;
+//	}
+//	//fputs("zxcvsan", pf);
+//	char c[10] = { 0 };
+//	fgets(c, 10, pf);
+//	printf("%s\n", c);//%s打印字符串
+//	fclose(pf);
+//	pf = NULL;
+//	return 0;
+//}
+typedef struct peo {
+	char name[20];
+	int age;
+	float weight;
+}p;
+//int main() {
+//	p s = { "zhangsan",20,90.9f};
+//	FILE* pf =fopen("test.txt", "w");
+//	if (pf == NULL) {
+//		perror("FILE");
+//	}
+//	fprintf(pf, "%s %d %f", s.name,s.age,s.weight);
+//	fclose(pf);
+//	pf = NULL;
+//	return 0;
+//}
+//int main() {
+//	p s = { 0 };
+//	FILE* ptf = fopen("test.txt", "r");
+//	if (ptf == NULL) {
+//		perror("FILE");
+//	}
+//	fscanf(ptf, "%s %d %f", s.name, &s.age, &s.weight);
+//	printf("%s %d %f", s.name, s.age, s.weight);
+//	fclose(ptf);
+//	ptf = NULL;
+//	return 0;
+//}
+//int main() {
+//	p s = { "wangwu",22,89.9f };
+//	char buf[20];
+//    sprintf(buf, "%s %d %f", s.name, s.age, s.weight);//sprintf是将结构体数据以字符串的形式存到buf里然后打印就可以直接打印buf，这个库函数和文件没有一毛关系
+//	printf("字符串%s\n", buf);
+//	sscanf(buf,"%s %d %f", s.name, &s.age, &s.weight);//sscanf是将字符串buf搞到结构体数据中，是可以以结构体形式打印出来的，这个库函数和文件没有一毛关系
+//	printf("结构体%s %d %f", s.name, s.age, s.weight);
+//	return 0;
+//}
+//int main() {
+//	char buf[20] = "asghdaj";
+//	FILE* pf = fopen("test.txt", "wb");//二进制写入用wb
+//	if (pf == NULL) {
+//		perror("FILE");
+//		return 1;
+//	}
+//	fwrite(buf, sizeof(buf), 1, pf);//二进制的写入，buf是一个指针，第二个是类型的大小，第三个是写入一组
+//	printf("%s\n", buf);
+//	fclose(pf);
+//	pf = NULL;
+//	return 0;
+//}
+//int main() {
+//	char buf[20] = "asghdaj";
+//	FILE* pf = fopen("test.txt", "rb");//二进制读出用rb
+//	if (pf == NULL) {
+//		perror("FILE");
+//		return 1;
+//	}
+//	fread(buf, sizeof(buf), 1, pf);//二进制的读出，buf是一个指针，第二个是类型的大小，第三个是写入一组
+//	printf("%s\n", buf);
+//	fclose(pf);
+//	pf = NULL;
+//	return 0;
+//}

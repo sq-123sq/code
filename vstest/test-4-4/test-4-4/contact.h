@@ -9,6 +9,8 @@
 #define MAX_SEX 10
 #define MAX_TEL 12
 #define MAX_ADDR 20
+#define ZXC 3
+#define ASD 2
 struct people {
 	char name[MAX_NAME];
 	char sex[MAX_SEX];
@@ -16,8 +18,15 @@ struct people {
 	char addr[MAX_ADDR];
 };
 typedef struct people peo;
+//静态的通讯录
+//struct contact {
+//	peo data[MAX];//存放人的信息
+//	int count;//记录当前人的个数
+//};
+//动态的通讯录
 struct contact {
-	peo data[MAX];//存放人的信息
+	peo* data;//存放人的信息
+	int sc;
 	int count;//记录当前人的个数
 };
 typedef struct contact con;
@@ -35,3 +44,9 @@ void contactfind(con* pc);
 void contactchange(con* pc);
 //根据姓名排序函数
 void contactqsout(con* pc);
+//清除通讯录
+void clean_all(con* pc);
+//保留通讯录
+void savecontact(con* pc);
+//加载通讯录加载出上次写入的通讯录信息
+void loadcontact(con* pc);

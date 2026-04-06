@@ -1,8 +1,59 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 #include "contact.h"
+//静态的通讯录
+//void infotcon(con* pc) {
+//   assert(pc);
+//	pc->count = 0;
+//	memset(pc->data, 0, sizeof(pc->data));
+//}
+//动态的添加通讯录
+void check_add(con* pc) {
+	assert(pc);
+	if (pc->count == pc->sc) {
+		peo* ptr = (peo*)realloc(pc->data, (pc->sc + ASD) * sizeof(peo));
+		if (ptr == NULL) {
+			perror("contactadd");
+			return;
+		}
+		else {
+			pc->data = ptr;
+			pc->sc += ASD;
+			printf("增容成功\n");
+		}
+	}
+}//增容函数
+void loadcontact(con* pc) {
+	FILE* pfread = fopen("contact.txt","rb");
+	if (pfread == NULL) {
+		perror("loadcontact");
+		return;
+	}
+	peo tmp = { 0 };
+	while (fread(&tmp, sizeof(peo), 1, pfread) == 1) {
+		check_add(pc);
+		pc->data[pc->count] = tmp;
+		pc->count++;
+	}
+	fclose(pfread);
+	pfread = NULL;
+}
+//动态的通讯录
 void infotcon(con* pc) {
+	assert(pc);
 	pc->count = 0;
-	memset(pc->data, 0, sizeof(pc->data));
+	pc->data = (peo*)calloc(ZXC, sizeof(peo));
+	if (pc->data == NULL) {
+			perror("infotcon");
+			return;
+	}
+	pc->sc = ZXC;
+	loadcontact(pc);
+}
+//清除函数
+void clean_all(con* pc) {
+	assert(pc);
+	free(pc->data);
+	pc->data = NULL;
 }
 int findname(con* pc, char name[]) {
 	for (int i = 0; i < pc->count; i++) {
@@ -31,12 +82,28 @@ int comp_by_tel(const void* e1, const void* e2) {
 int comp_by_address(const void* e1, const void* e2) {
 	return strcmp(((peo*)e1)->addr, ((peo*)e2)->addr);
 }
+//静态添加通讯录
+//void contactadd(con* pc) {
+//	assert(pc);
+//	if (pc->count == MAX) {
+//		printf("通讯录已满不能添加\n");
+//		return;
+//	}
+//	printf("请输入姓名：");
+//	scanf("%s", pc->data[pc->count].name);
+//	printf("请输入性别：");
+//	scanf("%s", pc->data[pc->count].sex);
+//	printf("请输入电话：");
+//	scanf("%s", pc->data[pc->count].tel);
+//	printf("请输入地址：");
+//	scanf("%s", pc->data[pc->count].addr);
+//	pc->count++;
+//	printf("输入成功\n");
+//}
+//动态的添加通讯录
 void contactadd(con* pc) {
 	assert(pc);
-	if (pc->count == MAX) {
-		printf("通讯录已满不能添加\n");
-		return;
-	}
+	check_add(pc);
 	printf("请输入姓名：");
 	scanf("%s", pc->data[pc->count].name);
 	printf("请输入性别：");
@@ -141,4 +208,17 @@ void contactqsout(con* pc) {
 		printf("输入错误\n");
 		break;
 	}
+}
+void savecontact(con* pc) {
+	assert(pc);
+	FILE* pfwrite = fopen("contact.txt", "wb");
+	if (pfwrite == NULL) {
+		perror("savecontact");
+		return;
+	}
+	for (int i = 0; i < pc->count; i++) {
+		fwrite(pc->data+i, sizeof(peo), 1, pfwrite);
+	}
+	fclose(pfwrite);
+	pfwrite = NULL;
 }
