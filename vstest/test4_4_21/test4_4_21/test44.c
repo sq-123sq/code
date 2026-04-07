@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
-#define MAX 10
+//#define MAX 10
 //int main() {
 //	int* p = (int*)malloc(40);
 //	if (p == NULL)
@@ -125,7 +125,7 @@
 //		return 1;
 //	}
 //	int c=0;
-//	while ((c = fgetc(pf)) != EOF) {
+//	while ((c = fgetc(pf)) != EOF) {//fgetc判断用EOF
 //		putchar(c);//打印单个字符%c也可以打印字符
 //	}
 //	fclose(pf);
@@ -140,24 +140,24 @@
 //	}
 //	//fputs("zxcvsan", pf);
 //	char c[10] = { 0 };
-//	fgets(c, 10, pf);
+//	fgets(c, 10, pf);//fgets判断用null
 //	printf("%s\n", c);//%s打印字符串
 //	fclose(pf);
 //	pf = NULL;
 //	return 0;
 //}
-typedef struct peo {
-	char name[20];
-	int age;
-	float weight;
-}p;
+//typedef struct peo {
+//	char name[20];
+//	int age;
+//	float weight;
+//}p;
 //int main() {
 //	p s = { "zhangsan",20,90.9f};
 //	FILE* pf =fopen("test.txt", "w");
 //	if (pf == NULL) {
 //		perror("FILE");
 //	}
-//	fprintf(pf, "%s %d %f", s.name,s.age,s.weight);
+//	fprintf(pf, "%s %d %f", s.name,s.age,s.weight);//打印日志
 //	fclose(pf);
 //	pf = NULL;
 //	return 0;
@@ -190,7 +190,7 @@ typedef struct peo {
 //		perror("FILE");
 //		return 1;
 //	}
-//	fwrite(buf, sizeof(buf), 1, pf);//二进制的写入，buf是一个指针，第二个是类型的大小，第三个是写入一组
+//	fwrite(buf, sizeof(buf), 1, pf);//二进制的写入，buf是一个指针，第二个是类型的大小，第三个是写入一个buf
 //	printf("%s\n", buf);
 //	fclose(pf);
 //	pf = NULL;
@@ -203,9 +203,39 @@ typedef struct peo {
 //		perror("FILE");
 //		return 1;
 //	}
-//	fread(buf, sizeof(buf), 1, pf);//二进制的读出，buf是一个指针，第二个是类型的大小，第三个是写入一组
+//	fread(buf, sizeof(buf), 1, pf);//二进制的读出，buf是一个指针，第二个是类型的大小，第三个是读的二进制个数fread的返回值就是那个个数如果返回个数相同则读到了那几个二进制
 //	printf("%s\n", buf);
 //	fclose(pf);
 //	pf = NULL;
 //	return 0;
 //}
+//int main() {
+//	FILE* pf = fopen("test.txt", "w");
+//	if (pf == NULL) {
+//		perror("fopen");
+//	}
+//	fclose(pf);
+//	pf = NULL;
+//	return 0;
+//}
+//#define SQUARE(x) ((x)*(x))//这里的所有括号都不能省，define的本质是替换不会进行计算并且define后面永远都没有;
+//#define print(x) printf("this is "#x"=%d\n",x)//#x是保留原有字符的意思
+//int main() {
+//	int r = SQUARE(3);
+//	printf("%d\n", r);
+//	print(r);
+//	return 0;
+//}
+#define MAX 10
+int main() {
+#if 4==5//每一个#if或#ifdef或#ifndef都要有一个#endif结尾不能少，格式与if语句类似可以嵌套使用
+	printf("%d\n", MAX);
+#endif
+#ifdef MAX
+	printf("%d\n", MAX);
+#endif
+#ifndef MAX//#ifndef相当于#ifdef !MAX就类似等于0
+	printf("%d\n", MAX);
+#endif
+	return 0;
+}
