@@ -214,6 +214,12 @@
 //	if (pf == NULL) {
 //		perror("fopen");
 //	}
+//	fputs("fuck you !", pf);
+//	fclose(pf);
+//    pf = fopen("test.txt", "r");
+//	fseek(pf, 2, SEEK_SET);//fseek是用于读文件的
+//	int c = fgetc(pf);
+//	putchar(c);
 //	fclose(pf);
 //	pf = NULL;
 //	return 0;
@@ -226,16 +232,33 @@
 //	print(r);
 //	return 0;
 //}
-#define MAX 10
+//#define MAX 10
+//int main() {
+//#if 4==5//每一个#if或#ifdef或#ifndef都要有一个#endif结尾不能少，格式与if语句类似可以嵌套使用
+//	printf("%d\n", MAX);
+//#endif
+//#ifdef MAX
+//	printf("%d\n", MAX);
+//#endif
+//#ifndef MAX//#ifndef相当于#ifdef !MAX就类似等于0
+//	printf("%d\n", MAX);
+//#endif
+//	return 0;
+//}
 int main() {
-#if 4==5//每一个#if或#ifdef或#ifndef都要有一个#endif结尾不能少，格式与if语句类似可以嵌套使用
-	printf("%d\n", MAX);
-#endif
-#ifdef MAX
-	printf("%d\n", MAX);
-#endif
-#ifndef MAX//#ifndef相当于#ifdef !MAX就类似等于0
-	printf("%d\n", MAX);
-#endif
+	int a = 0;
+	scanf("%d", &a);
+	while (a!=0) {
+		int i = 0;
+		for (i = 0; i <a;i++) {
+			for (int j = 0; j < a; j++) {
+				printf("  ");
+			}
+			for (int s = 0; s <= a - i; s++) {
+				printf("*");
+			}
+			printf("\n");
+		}
+	}
 	return 0;
 }
