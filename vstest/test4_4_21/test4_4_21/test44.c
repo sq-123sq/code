@@ -245,20 +245,71 @@
 //#endif
 //	return 0;
 //}
-int main() {
-	int a = 0;
-	scanf("%d", &a);
-	while (a!=0) {
-		int i = 0;
-		for (i = 0; i <a;i++) {
-			for (int j = 0; j < a; j++) {
-				printf("  ");
-			}
-			for (int s = 0; s <= a - i; s++) {
-				printf("*");
-			}
-			printf("\n");
-		}
-	}
-	return 0;
-}
+//int main() {
+//	int n = 0;
+//	//打印箭头
+//	while (scanf("%d",&n)==1) {
+//		//打印上n行
+//		for (int i = 0; i < n; i++) {
+//			for (int j = 0; j < n - i; j++) {  //可以把数字带入进去然后把结果想象出来结果对了那就是这个计算式
+//				printf("  ");
+//			}
+//			for (int j = 0; j <= i; j++) {
+//				printf("*");
+//			}
+//			printf("\n");
+//		}
+//		//打印下n+1行
+//		for (int i = 0; i < n + 1; i++) {
+//			for (int j = 0; j < i; j++) {
+//				printf("  ");
+//			}
+//			for (int j = 0; j < n + 1 - i; j++) {
+//				printf("*");
+//			}
+//			printf("\n");
+//		}
+//	}
+//	return 0;
+//}
+//struct pfnode {
+//	int data;
+//	struct pfnode* next;
+//};//一个链表
+//typedef struct pfnode PD;
+//int main() {
+//
+//	return 0;
+//}
+//求7个数减去最大最小值的平均数
+//int compare(const void* e1, const void* e2) {
+//	return *(int*)e1 - *(int*)e2;
+//}
+//int main() {
+//	int arr[7] = { 0 };
+//	int sum = 0;
+//	for (int i = 0; i < 7; i++) {
+//		scanf("%d", &arr[i]);
+//	}
+//	for (int i = 0; i < 7; i++) {
+//		sum += arr[i];
+//	}
+//	qsort(arr, 7, sizeof(arr[0]), compare);
+//	sum = (sum - arr[0] - arr[6]) / 5;
+//	printf("%d\n", sum);
+//}
+//void swap(int* a, int* b) {
+//	int tmp = *a;
+//	*a = *b;
+//	*b = tmp;
+//}
+//int main() {
+//	int a = 0;
+//	int b = 0;
+//	scanf("%d %d", &a, &b);//“”里面最好不要写逗号直接空格
+//	printf("之前%d,%d\n", a, b);
+//	swap(&a, &b);
+//	printf("之后%d,%d\n", a, b);
+//	return 0;
+//}
+
