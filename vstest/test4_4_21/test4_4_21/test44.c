@@ -312,4 +312,193 @@
 //	printf("之后%d,%d\n", a, b);
 //	return 0;
 //}
-
+//int main() {
+//	for (int i = 0; i < 6; i++) {
+//		for (int j = 0; j < 12; j++) {
+//			if ((i == 0 || i == 1) && (j == 5 || j == 6)) {
+//				printf("*");
+//			}
+//			else if (i == 2 || i == 3) {
+//				printf("*");
+//			}
+//			else if ((i == 4 || i == 5) && (j == 4 || j == 7)) {
+//				printf("*");
+//			}
+//			else {
+//				printf(" ");
+//			}
+//		}
+//		printf("\n");
+//	}
+//	return 0;
+//}
+#define MAXSIZE 100
+#define DEL 10
+#define START 3
+#define ADD 2
+typedef struct book {
+	char id[20];
+	char name[20];
+	double price;
+}B;
+//typedef struct BOOKLIST {
+//	B data[MAXSIZE];
+//	int count;
+//}BL;
+typedef struct BOOKLIST {
+	B* data;
+	int count;//表示现有数据个数
+	int py;//表示现有的容量
+}BL;
+//初始化函数
+//void init(BL* p) {
+//	p->count = 0;
+//	memset(p->data, 0, sizeof(p->data));//初始化book
+//}
+//动态初始化
+void init(BL* p) {
+	p->count = 0;
+	p->data=(B*)calloc(START,sizeof(B));//初始化book并进行扩容
+	if (p->data == NULL) {
+		perror("init");
+	}
+	p->py = START;
+}
+//添加函数
+//void addbook(BL* p) {
+//	if (p->count >= MAXSIZE) {
+//		printf("已满不可添加\n");
+//	}
+//	printf("请输入书号书名及价格\n");
+//	scanf("%s", &p->data[p->count].id);
+//	scanf("%s", &p->data[p->count].name);
+//	scanf("%lf", &p->data[p->count].price);
+//	p->count++;
+//	printf("添加成功\n");
+//}
+//动态添加
+void addbook(BL* p) {
+	if (p->count >= p->py) {
+		B* pf = (B*)realloc(p->data, (p->py + ADD) * sizeof(B));//如果内容大于容量进行增容
+		if (pf == NULL) {
+			perror("addbook");
+		}
+		p->data = pf;
+		p->py += ADD;
+		printf("增容成功\n");
+	}
+	printf("请输入书号书名及价格\n");
+	scanf("%s", &p->data[p->count].id);
+	scanf("%s", &p->data[p->count].name);
+	scanf("%lf", &p->data[p->count].price);
+	p->count++;
+	printf("添加成功\n");
+}
+//遍历函数
+void showbook(BL* p) {
+	for (int i = 0; i < p->count; i++) {
+		printf("书号为%s 书名为%s 价格为%lf\n", 
+			p->data[i].id,
+			p->data[i].name,
+			p->data[i].price);
+	}
+}
+//插入函数
+//void insertbook(BL* p) {
+//	int pos = 0;
+//	printf("请输入要插入的位置\n");
+//	scanf("%d", &pos);
+//	if (p->count >= MAXSIZE) {
+//		printf("已满不可添加\n");
+//	}
+//	if (pos<1 || pos>MAXSIZE) {
+//		printf("插入位置输入错误\n");
+//	}
+//	if (pos <= p->count) {
+//		for (int i = p->count - 1; i >= pos-1; i--) {
+//			p->data[i + 1] = p->data[i];
+//		}
+//		printf("请输入书号书名及价格\n");
+//		scanf("%s", &p->data[pos-1].id);
+//		scanf("%s", &p->data[pos-1].name);
+//		scanf("%lf", &p->data[pos-1].price);
+//		p->count++;
+//		printf("插入成功\n");
+//	}
+//}
+//动态插入
+void insertbook(BL* p) {
+	int pos = 0;
+	printf("请输入要插入的位置\n");
+	scanf("%d", &pos);
+	if (p->count >= p->py) {
+		B* pf = (B*)realloc(p->data, (p->py+ADD) * sizeof(B));//如果内容大于容量进行增容
+		if (pf == NULL) {
+			perror("addbook");
+		}
+		p->data = pf;
+		p->py += ADD;
+		printf("增容成功\n");
+	}
+	if (pos<1 || pos>p->py) {
+		printf("插入位置输入错误\n");
+	}
+	if (pos <= p->count) {
+		for (int i = p->count - 1; i >= pos - 1; i--) {
+			p->data[i + 1] = p->data[i];
+		}
+		printf("请输入书号书名及价格\n");
+		scanf("%s", &p->data[pos - 1].id);
+		scanf("%s", &p->data[pos - 1].name);
+		scanf("%lf", &p->data[pos - 1].price);
+		p->count++;
+		printf("插入成功\n");
+	}
+}
+//删除函数
+void delbook(BL* p) {
+	char del[DEL] = { 0 };
+	printf("请输入要删除的书名\n");
+	scanf("%s", del);
+	int pos = 0;
+	for (int i = 0; i < p->count; i++) {
+		if (strcmp(p->data[i].name, del) == 0) {
+			pos=i;//找到名字相同的下标然后退出循环
+			break;
+		}
+	}
+	for (int i = pos; i < p->count-1; i++) {
+		p->data[i] = p->data[i + 1];//用找到的pos让pos的位置等于下一个的位置以实现覆盖删除
+	}
+	p->count--;
+	printf("删除成功\n");
+}
+//查找函数
+void findbook(BL* p) {
+	char del[DEL] = { 0 };
+	printf("请输入要查找的书名\n");
+	scanf("%s", del);
+	for (int i = 0; i < p->count; i++) {
+		if (strcmp(p->data[i].name, del) == 0) {
+			printf("书号为%s 书名为%s 价格为%lf\n",
+				p->data[i].id,
+				p->data[i].name,
+				p->data[i].price);
+			break;
+		}
+	}
+}
+int main() {
+	BL s;
+	init(&s);
+	for (int i = 0; i <START; i++) {
+		addbook(&s);
+	}
+	showbook(&s);
+	insertbook(&s);
+	showbook(&s);
+	delbook(&s);
+	showbook(&s);
+	findbook(&s);
+	return 0;
+}
