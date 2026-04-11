@@ -1,8 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS 1
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
+#include "test.h"
 //#define MAX 10
 //int main() {
 //	int* p = (int*)malloc(40);
@@ -272,15 +268,142 @@
 //	}
 //	return 0;
 //}
-//struct pfnode {
-//	int data;
-//	struct pfnode* next;
-//};//一个链表
-//typedef struct pfnode PD;
-//int main() {
-//
-//	return 0;
+struct pfnode {
+	int data;//数据
+	struct pfnode* next;//指针
+};//一个链表
+typedef struct pfnode PD;
+//void initlist(PD* p) {//单链表的静态初始化
+//	p->data = 0;
+//	p->next = NULL;
 //}
+PD* initnode() {//动态初始化返回类型为指针
+	PD* pf = (PD*)malloc(sizeof(PD));
+	if (pf == NULL) {
+		perror("init");
+		return NULL;
+	}
+	pf->data = 0;
+	pf->next = NULL;
+	return pf;
+}
+//头插法插入数据--无需特别返回值
+void  insertnode(PD* s, int data) {
+	PD* p = (PD*)malloc(sizeof(PD));
+	if (p == NULL) {
+		perror("insertnode");
+		return;
+	}
+	p->data = data;//给数据
+	p->next = s->next;//先让新开辟的PD的next指向旧的next
+	s->next = p;//然后再让旧的next指向这个空间
+}
+//遍历
+void shownode(PD* s) {
+	PD* p = s->next;
+	while (p!= NULL) {
+		printf("%d ", p->data);
+		p = p->next;
+	}
+	printf("\n");
+}
+//找到尾节点
+PD* gettail(PD* s) {
+	PD* p = s;
+	while (p->next != NULL) {
+		p = p->next;
+	}
+	return p;
+}
+//尾插法--最好有返回值
+PD* inserttail(PD* s,int data) {
+	PD* p = (PD*)malloc(sizeof(PD));
+	if (p == NULL) {
+		perror("inserttail");
+		return;
+	}
+	p->data = data;
+	s->next = p;
+	p->next = NULL;
+	return p;
+}
+//中间插入数据，这个可以替代头插和尾插函数
+void insertdata(PD* s, int pos,int data) {
+	PD* p = s;
+	int i = 0;
+	while (i < pos - 1) {
+		p = p->next;
+		i++;
+		if (p == NULL) {
+			return;
+		}
+	}
+	PD* ps = (PD*)malloc(sizeof(PD));
+	if (ps == NULL) {
+		perror("insertdata");
+		return;
+	}
+	ps->data = data;
+	ps->next = p->next;
+	p->next = ps;
+}
+//删除指定位置的数据
+void deldata(PD* s, int pos) {
+	PD* p = s;
+	for (int i = 0; i < pos - 1; i++) {
+		p = p->next;
+		if (p == NULL) {
+			printf("数据为空无法删除\n");
+			break;
+		}
+	}
+	PD* ps = p->next;
+	p->next = ps->next;
+	free(ps);
+	return;
+}
+//获取链表长度
+int lendata(PD* s) {
+	PD* p = s;
+	int len=0;
+	while (p != NULL) {
+		p = p->next;
+		len++;
+	}
+	return len;
+}
+//释放链表
+void freedata(PD* s) {
+	PD* p = s->next;
+	PD* ps=NULL;
+	while (p != NULL) {
+		p->next = ps;
+		free(p);
+		p = ps;
+	}
+	s->next = p;
+	printf("释放或清理成功\n");
+}
+int main() {
+	//PD s;//已经给s开辟了空间无需malloc是静态的
+	//initlist(&s);
+	PD* s = initnode();//头节点
+	/*insertnode(s, 30);
+	insertnode(s, 40);
+	insertnode(s, 50);*/
+	PD* tail = gettail(s);
+	tail=inserttail(tail, 30);
+	tail=inserttail(tail, 40);
+	tail=inserttail(tail, 50);
+	insertdata(s,4,10);
+	shownode(s);
+	deldata(s, 2);
+	shownode(s);
+	int len = lendata(s);
+	printf("%d\n", len);
+	freedata(s);
+	return 0;
+}
 //求7个数减去最大最小值的平均数
 //int compare(const void* e1, const void* e2) {
 //	return *(int*)e1 - *(int*)e2;
@@ -332,173 +455,53 @@
 //	}
 //	return 0;
 //}
-#define MAXSIZE 100
-#define DEL 10
-#define START 3
-#define ADD 2
-typedef struct book {
-	char id[20];
-	char name[20];
-	double price;
-}B;
-//typedef struct BOOKLIST {
-//	B data[MAXSIZE];
-//	int count;
-//}BL;
-typedef struct BOOKLIST {
-	B* data;
-	int count;//表示现有数据个数
-	int py;//表示现有的容量
-}BL;
-//初始化函数
-//void init(BL* p) {
-//	p->count = 0;
-//	memset(p->data, 0, sizeof(p->data));//初始化book
+//void menu() {
+//	printf("************图书管理系统*************\n");
+//	printf("**1.添加*********2.查找**************\n");
+//	printf("**3.删除*********4.更改**************\n");
+//	printf("**5.排序*********6.图书信息**********\n");
+//	printf("**7.插入图书*****0.退出管理程序******\n");
+//	printf("*************************************\n");
 //}
-//动态初始化
-void init(BL* p) {
-	p->count = 0;
-	p->data=(B*)calloc(START,sizeof(B));//初始化book并进行扩容
-	if (p->data == NULL) {
-		perror("init");
-	}
-	p->py = START;
-}
-//添加函数
-//void addbook(BL* p) {
-//	if (p->count >= MAXSIZE) {
-//		printf("已满不可添加\n");
-//	}
-//	printf("请输入书号书名及价格\n");
-//	scanf("%s", &p->data[p->count].id);
-//	scanf("%s", &p->data[p->count].name);
-//	scanf("%lf", &p->data[p->count].price);
-//	p->count++;
-//	printf("添加成功\n");
-//}
-//动态添加
-void addbook(BL* p) {
-	if (p->count >= p->py) {
-		B* pf = (B*)realloc(p->data, (p->py + ADD) * sizeof(B));//如果内容大于容量进行增容
-		if (pf == NULL) {
-			perror("addbook");
-		}
-		p->data = pf;
-		p->py += ADD;
-		printf("增容成功\n");
-	}
-	printf("请输入书号书名及价格\n");
-	scanf("%s", &p->data[p->count].id);
-	scanf("%s", &p->data[p->count].name);
-	scanf("%lf", &p->data[p->count].price);
-	p->count++;
-	printf("添加成功\n");
-}
-//遍历函数
-void showbook(BL* p) {
-	for (int i = 0; i < p->count; i++) {
-		printf("书号为%s 书名为%s 价格为%lf\n", 
-			p->data[i].id,
-			p->data[i].name,
-			p->data[i].price);
-	}
-}
-//插入函数
-//void insertbook(BL* p) {
-//	int pos = 0;
-//	printf("请输入要插入的位置\n");
-//	scanf("%d", &pos);
-//	if (p->count >= MAXSIZE) {
-//		printf("已满不可添加\n");
-//	}
-//	if (pos<1 || pos>MAXSIZE) {
-//		printf("插入位置输入错误\n");
-//	}
-//	if (pos <= p->count) {
-//		for (int i = p->count - 1; i >= pos-1; i--) {
-//			p->data[i + 1] = p->data[i];
+//int main() {
+//	BL s;
+//	init(&s);
+//	int intput;
+//	do
+//	{   menu();
+//		printf("请选择选项:");
+//		scanf("%d", &intput);
+//		switch (intput)
+//		{
+//		case 1:
+//			addbook(&s);
+//			break;
+//		case 2:
+//			findbook(&s);
+//			break;
+//		case 3:
+//			delbook(&s);
+//			break;
+//		case 4:
+//			changebook(&s);
+//			break;
+//		case 5:
+//			qsortbook(&s);
+//			break;
+//		case 6:
+//			showbook(&s);
+//			break;
+//		case 7:
+//			insertbook(&s);
+//			break;
+//		case 0:
+//			printf("退出程序\n");
+//			cleanbook(&s);
+//			break;
+//		default:
+//			printf("输入错误没有该选项，请重新选择\n");
+//			break;
 //		}
-//		printf("请输入书号书名及价格\n");
-//		scanf("%s", &p->data[pos-1].id);
-//		scanf("%s", &p->data[pos-1].name);
-//		scanf("%lf", &p->data[pos-1].price);
-//		p->count++;
-//		printf("插入成功\n");
-//	}
+//	} while (intput);
+//	return 0;
 //}
-//动态插入
-void insertbook(BL* p) {
-	int pos = 0;
-	printf("请输入要插入的位置\n");
-	scanf("%d", &pos);
-	if (p->count >= p->py) {
-		B* pf = (B*)realloc(p->data, (p->py+ADD) * sizeof(B));//如果内容大于容量进行增容
-		if (pf == NULL) {
-			perror("addbook");
-		}
-		p->data = pf;
-		p->py += ADD;
-		printf("增容成功\n");
-	}
-	if (pos<1 || pos>p->py) {
-		printf("插入位置输入错误\n");
-	}
-	if (pos <= p->count) {
-		for (int i = p->count - 1; i >= pos - 1; i--) {
-			p->data[i + 1] = p->data[i];
-		}
-		printf("请输入书号书名及价格\n");
-		scanf("%s", &p->data[pos - 1].id);
-		scanf("%s", &p->data[pos - 1].name);
-		scanf("%lf", &p->data[pos - 1].price);
-		p->count++;
-		printf("插入成功\n");
-	}
-}
-//删除函数
-void delbook(BL* p) {
-	char del[DEL] = { 0 };
-	printf("请输入要删除的书名\n");
-	scanf("%s", del);
-	int pos = 0;
-	for (int i = 0; i < p->count; i++) {
-		if (strcmp(p->data[i].name, del) == 0) {
-			pos=i;//找到名字相同的下标然后退出循环
-			break;
-		}
-	}
-	for (int i = pos; i < p->count-1; i++) {
-		p->data[i] = p->data[i + 1];//用找到的pos让pos的位置等于下一个的位置以实现覆盖删除
-	}
-	p->count--;
-	printf("删除成功\n");
-}
-//查找函数
-void findbook(BL* p) {
-	char del[DEL] = { 0 };
-	printf("请输入要查找的书名\n");
-	scanf("%s", del);
-	for (int i = 0; i < p->count; i++) {
-		if (strcmp(p->data[i].name, del) == 0) {
-			printf("书号为%s 书名为%s 价格为%lf\n",
-				p->data[i].id,
-				p->data[i].name,
-				p->data[i].price);
-			break;
-		}
-	}
-}
-int main() {
-	BL s;
-	init(&s);
-	for (int i = 0; i <START; i++) {
-		addbook(&s);
-	}
-	showbook(&s);
-	insertbook(&s);
-	showbook(&s);
-	delbook(&s);
-	showbook(&s);
-	findbook(&s);
-	return 0;
-}
