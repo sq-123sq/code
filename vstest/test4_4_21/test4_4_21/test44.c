@@ -268,8 +268,9 @@
 //	}
 //	return 0;
 //}
+typedef char str;
 struct pfnode {
-	int data;//数据
+	str data;//数据
 	struct pfnode* next;//指针
 };//一个链表
 typedef struct pfnode PD;
@@ -288,21 +289,22 @@ PD* initnode() {//动态初始化返回类型为指针
 	return pf;
 }
 //头插法插入数据--无需特别返回值
-void  insertnode(PD* s, int data) {
+void  insertnode(PD* s, str data) {
 	PD* p = (PD*)malloc(sizeof(PD));
 	if (p == NULL) {
 		perror("insertnode");
 		return;
 	}
 	p->data = data;//给数据
-	p->next = s->next;//先让新开辟的PD的next指向旧的next
-	s->next = p;//然后再让旧的next指向这个空间
+	p->next = s->next;//先让新开辟的PD的next指向头结点的next
+	s->next = p;//然后再让头结点的next指向这个空间
 }
 //遍历
 void shownode(PD* s) {
 	PD* p = s->next;
 	while (p!= NULL) {
-		printf("%d ", p->data);
+		//printf("%d ", p->data);
+		putchar(p->data);
 		p = p->next;
 	}
 	printf("\n");
@@ -316,11 +318,11 @@ PD* gettail(PD* s) {
 	return p;
 }
 //尾插法--最好有返回值
-PD* inserttail(PD* s,int data) {
+PD* inserttail(PD* s,str data) {
 	PD* p = (PD*)malloc(sizeof(PD));
 	if (p == NULL) {
 		perror("inserttail");
-		return;
+		return NULL;
 	}
 	p->data = data;
 	s->next = p;
@@ -328,7 +330,7 @@ PD* inserttail(PD* s,int data) {
 	return p;
 }
 //中间插入数据，这个可以替代头插和尾插函数
-void insertdata(PD* s, int pos,int data) {
+void insertdata(PD* s, int pos,str data) {
 	PD* p = s;
 	int i = 0;
 	while (i < pos - 1) {
@@ -384,23 +386,159 @@ void freedata(PD* s) {
 	s->next = p;
 	printf("释放或清理成功\n");
 }
+//找到倒数第k个数据
+void findlast(PD* s,int k) {
+	PD* fast = s->next;
+	PD* slow = s->next;
+	for (int i = 0; i < k; i++) {
+		fast = fast->next;
+	}
+	while (fast != NULL) {
+		fast = fast->next;
+		slow = slow->next;
+	}
+	printf("%d\n", slow->data);
+}
+//找到2个链表之间第一个相同的数据
+void findsame(PD* a,PD* b) {
+	PD* fast=a->next;
+	PD* slow=b->next;
+	int ma = lendata(fast);
+	int mb = lendata(slow);
+	int k = abs(ma - mb);
+	if (ma > mb) {
+		fast = a->next;
+		slow = b->next;
+	}
+	else if (ma < mb) {
+		fast = b->next;
+		slow = a->next;
+	}
+	for (int i = 0; i < k; i++) {
+		fast = fast->next;
+	}
+	while (fast->data != slow->data) {
+		fast = fast->next;
+		slow = slow->next;
+	}
+	printf("%c\n", slow->data);
+}
+//添加数据
+void adddata(PD* s) {
+	PD* p = s;
+	str c = 0;
+	PD* ps = (PD*)malloc(sizeof(PD));
+	if (ps == NULL) {
+		perror("adddata");
+		return;
+	}
+	printf("请输入字符\n");
+	scanf("%c", &c);
+	getchar();//吃掉空格让数据能存入链表中
+	ps->data = c;
+	ps->next = p->next;
+	p->next = ps;
+}
+//反转链表
+PD* reservedata(PD* s) {
+	PD* fist = NULL;
+	PD* second = s->next;
+	PD* third;
+	while (second != NULL) {
+		third = second->next;
+		second->next = fist;
+		fist = second;
+		second = third;
+
+	}
+	PD* new = initnode();
+	new->next = fist;
+	return new;
+}
+//删除中间数
+void deldis(PD* s) {
+	PD* slow = s;
+	PD* fast = s->next;
+	while (fast->next != NULL && fast != NULL) {//数据个数有奇数个和偶数个
+		fast = fast->next->next;
+		slow = slow->next;
+	}
+	PD* q = slow->next;
+	slow->next = q->next;
+	free(q);
+}
+//判断是否是循环链表
+void findcycle(PD* s) {
+	PD* fast = s;
+	PD* slow = s;
+	while (fast != NULL && fast->next != NULL) {
+		fast = fast->next->next;
+		slow = slow->next;
+		if (fast == slow) {
+			printf("有环\n");
+			break;
+		}
+	}
+}
+//void delsame(PD* s) {
+//
+//}
 int main() {
 	//PD s;//已经给s开辟了空间无需malloc是静态的
 	//initlist(&s);
-	PD* s = initnode();//头节点
+	PD* s = initnode();//s是指向头节点的一个指针
+	PD* q = initnode();
 	/*insertnode(s, 30);
 	insertnode(s, 40);
 	insertnode(s, 50);*/
+	//PD* tail = gettail(s);
+	//tail=inserttail(tail, 30);
+	//tail=inserttail(tail, 40);
+	//tail=inserttail(tail, 50);
+	//insertdata(s,4,10);
+	//shownode(s);
+	//deldata(s, 2);
+	//shownode(s);
+	//int len = lendata(s);
+	//printf("%d\n", len);
+	//findlast(s, 2);
+	//shownode(s);
 	PD* tail = gettail(s);
-	tail=inserttail(tail, 30);
-	tail=inserttail(tail, 40);
-	tail=inserttail(tail, 50);
-	insertdata(s,4,10);
-	shownode(s);
-	deldata(s, 2);
-	shownode(s);
-	int len = lendata(s);
-	printf("%d\n", len);
+	//PD* tail1 = gettail(q);
+	tail=inserttail(tail, 'l');
+	tail=inserttail(tail, 'o');
+	tail=inserttail(tail, 'a');
+	PD* qq=initnode();//用一个新的节点等于该尾节点，后期再让之后的尾节点是该节点从而构成环
+	qq->next = tail;
+	tail=inserttail(tail, 'd');
+	tail=inserttail(tail, 'i');
+	tail=inserttail(tail, 'n');
+	tail=inserttail(tail, 'g');
+	tail->next=qq;
+	findcycle(s);
+	//tail1 = inserttail(tail1, 'b');
+	//tail1 = inserttail(tail1, 'e');
+	//tail1 = inserttail(tail1, 'i');
+	//tail1 = inserttail(tail1, 'n');
+	//tail1 = inserttail(tail1, 'g');
+	//shownode(s);
+	//shownode(q);
+	//findsame(s, q);
+	//adddata(s);
+	//adddata(s);
+	//adddata(s);
+	//adddata(s);
+	//adddata(s);
+	//adddata(s);
+	//shownode(s);
+	//adddata(q);
+	//adddata(q);
+	//adddata(q);
+	//shownode(q);
+	//q=reservedata(q);
+	//shownode(q);
+	//deldis(q);
+	//shownode(q);
 	freedata(s);
 	return 0;
 }
@@ -503,5 +641,22 @@ int main() {
 //			break;
 //		}
 //	} while (intput);
+//	return 0;
+//}
+//typedef struct node {
+//	int data;
+//	struct node* next;
+//}N;
+//N* initnode() {
+//	N* ps = (N*)malloc(sizeof(N));
+//	if (ps == NULL) {
+//		perror("initnode");
+//		return NULL;
+//	}
+//	ps->data = 0;
+//	ps->next = NULL;
+//}
+//int main() {
+//	N* p = initnode();
 //	return 0;
 //}
