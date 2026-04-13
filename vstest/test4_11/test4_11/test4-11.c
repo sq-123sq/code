@@ -23,6 +23,21 @@ ts* inits() {
 	c->next = NULL;
 	return c;
 }
+//反转链表
+ts* reservers(ts* c) {
+	ts* fist = NULL;
+	ts* second = c->next;
+	ts* third;
+	while (second != NULL) {
+		third = second->next;
+		second->next = fist;
+		fist = second;
+		second = third;
+	}
+	ts* new = inits();
+	new->next = fist;
+	return new;
+}
 //遍历
 void shows(ts* c) {
 	ts* q = c->next;
@@ -47,10 +62,12 @@ void adds(ts* c) {
 	
 	ps->next = p->next;
 	p->next = ps;
+	printf("添加成功\n");
 }
 //删除函数
 void dels(ts* c) {
 	ts* ps = c;
+	int k = -1;
 	char* buf = (char*)malloc(sizeof(char)*SIZE);
 	if (buf == NULL) {
 		perror("dels");
@@ -60,17 +77,107 @@ void dels(ts* c) {
 	printf("请输入要去除的名字\n");
 	scanf("%s", buf);
 	while (ps->next != NULL) {
-		ps = ps->next;
 		if (strcmp(buf, (ps->next->p).name) == 0) {
 			ts* pt = ps->next;
 			ps->next = pt->next;
 			free(pt);
+			k = 0;
 			printf("删除成功\n");
 			break;
 		}
+		ps = ps->next;
+	}
+	if (k == -1) {
+		printf("删除失败没有该名字\n");
 	}
 	free(buf);
 	buf = NULL;
+}
+//查找函数
+void finds(ts* c) {
+	ts* ps = c;
+	int k = -1;
+	char* buf = (char*)malloc(sizeof(char)*SIZE);
+	if (buf == NULL) {
+		perror("dels");
+		return;
+	}
+	memset(buf, 0, sizeof(buf));
+	printf("请输入要查找的名字\n");
+	scanf("%s", buf);
+	while (ps->next != NULL) {
+		if (strcmp(buf, (ps->next->p).name) == 0) {
+			printf("%s %s", (ps->next->p).name, (ps->next->p).id);
+			k = 0;
+			printf("查找成功\n");
+			break;
+		}
+		ps = ps->next;
+	}
+	if (k == -1) {
+		printf("查找失败没有该名字\n");
+	}
+	free(buf);
+	buf = NULL;
+}
+void changes(ts* c) {
+	ts* ps = c;
+	int k = -1;
+	char* buf = (char*)malloc(sizeof(char)*SIZE);
+	if (buf == NULL) {
+		perror("dels");
+		return;
+	}
+	memset(buf, 0, sizeof(buf));
+	printf("请输入要更改的名字\n");
+	scanf("%s", buf);
+	while (ps->next != NULL) {
+		if (strcmp(buf, (ps->next->p).name) == 0) {
+			ts* pt = ps->next;
+			ps->next = pt->next;
+			free(pt);
+			ts* pc = (ts*)malloc(sizeof(ts));
+			if (pc == NULL) {
+				perror("changes");
+				return;
+			}
+			printf("请输入姓名\n");
+			scanf("%s", &((pc->p).name));
+			printf("请输入学号\n");
+			scanf("%s", &((pc->p).id));
+
+			pc->next = ps->next;
+			ps->next = pc;
+			k = 0;
+			printf("更改成功\n");
+			break;
+		}
+		ps = ps->next;
+	}
+	if (k == -1) {
+		printf("更改失败没有该名字\n");
+	}
+	free(buf);
+	buf = NULL;
+}
+//清空
+void delall(ts* c) {
+	ts* ps = c->next;
+	ts* pt = NULL;
+	while (ps != NULL) {
+		ps->next = pt;
+		free(ps);
+		ps = pt;
+	}
+	c->next = ps;
+	printf("已删除所有信息\n");
+}
+void menu() {
+	printf("*************学生管理系统**************\n");
+	printf("**1.添加学生信息***2.显示学生信********\n");
+	printf("**3.删除学生信息***4.查找学生信息******\n");
+	printf("**5.更改学生信息***0.退出管理系统******\n");
+	printf("**6.清除所有学生信息***********************\n");
 }
 int main() {
 	/*int c = getchar();
@@ -92,7 +199,8 @@ int main() {
 	ts* c = inits();
 	do
 	{
-		printf("请输入1或2,3，输入0则退出\n");
+		menu();
+		printf("请输入选项\n");
 		scanf("%d", &intput);
 		switch (intput)
 		{
@@ -100,10 +208,20 @@ int main() {
 			adds(c);
 			break;
 		case 2:
+			c = reservers(c);
 			shows(c);
 			break;
 		case 3:
 			dels(c);
+			break;
+		case 4:
+			finds(c);
+			break;
+		case 5:
+			changes(c);
+			break;
+		case 6:
+			delall(c);
 			break;
 		case 0:
 			printf("退出程序\n");

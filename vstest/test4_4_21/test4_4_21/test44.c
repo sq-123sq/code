@@ -480,6 +480,31 @@ void findcycle(PD* s) {
 		}
 	}
 }
+//找到环入口
+PD* findfistnode(PD* s) {
+	PD* fast = s;
+	PD* slow = s;
+	int count = 1;
+	while (fast != NULL && fast->next != NULL) {
+		fast = fast->next->next;
+		slow = slow->next;
+		 if(fast == slow) {
+			 //int count = 0;//计算环的节点个数
+			 //PD* tmp = fast;
+			 //do
+			 //{
+				// tmp = tmp->next;
+				// count++;
+			 //} while (tmp!=fast);
+			 slow = s;
+			 while (fast != slow) {
+				 fast = fast->next;
+				 slow = slow->next;
+			 }
+			 return slow;
+		}
+	}
+}
 //void delsame(PD* s) {
 //
 //}
@@ -516,6 +541,8 @@ int main() {
 	tail=inserttail(tail, 'g');
 	tail->next=qq;
 	findcycle(s);
+	PD* qw = findfistnode(s);
+	printf("%c", qw->data);
 	//tail1 = inserttail(tail1, 'b');
 	//tail1 = inserttail(tail1, 'e');
 	//tail1 = inserttail(tail1, 'i');

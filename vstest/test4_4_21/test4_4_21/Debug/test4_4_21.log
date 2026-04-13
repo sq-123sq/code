@@ -1,2 +1,3 @@
 ﻿  test44.c
+d:\gitcode\code\vstest\test4_4_21\test4_4_21\test44.c(507): warning C4715: “findfistnode”: 不是所有的控件路径都返回值
   test4_4_21.vcxproj -> D:\gitcode\code\vstest\test4_4_21\Debug\test4_4_21.exe

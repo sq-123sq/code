@@ -1,4 +1,4 @@
 ﻿  test4-11.c
 d:\gitcode\code\vstest\test4_11\test4_11\test4-11.c(15): warning C4013: “malloc”未定义；假设外部返回 int
-d:\gitcode\code\vstest\test4_11\test4_11\test4-11.c(67): warning C4013: “free”未定义；假设外部返回 int
+d:\gitcode\code\vstest\test4_11\test4_11\test4-11.c(83): warning C4013: “free”未定义；假设外部返回 int
   test4_11.vcxproj -> D:\gitcode\code\vstest\test4_11\Debug\test4_11.exe
