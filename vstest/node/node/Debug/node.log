@@ -1,6 +1,5 @@
 ﻿  node.c
-d:\gitcode\code\vstest\node\node\node.c(274): warning C4013: “malloc”未定义；假设外部返回 int
-d:\gitcode\code\vstest\node\node\node.c(295): warning C4033: “insertqueue”必须返回值
-d:\gitcode\code\vstest\node\node\node.c(315): warning C4013: “free”未定义；假设外部返回 int
-d:\gitcode\code\vstest\node\node\node.c(303): warning C4715: “insertqueue”: 不是所有的控件路径都返回值
+  students.c
+d:\gitcode\code\vstest\node\node\students.c(3): warning C4013: “malloc”未定义；假设外部返回 int
+  正在生成代码...
   node.vcxproj -> D:\gitcode\code\vstest\node\Debug\node.exe

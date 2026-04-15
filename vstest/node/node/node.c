@@ -1,6 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <string.h>
+#include "students.h"
 //typedef int ss;
 //typedef struct headnode {
 //	ss date;
@@ -260,76 +258,130 @@
 //	return 0;
 //}
 //
-typedef int anytype;
-typedef struct queuenode {
-	anytype data;
-	struct queuenode* next;
-}QN;
-typedef struct queue {
-	QN* front;//QN的结构体指针表示队头
-	QN* rear;
-}Q;
-//初始化
-Q* initqueue() {
-	QN* p = (QN*)malloc(sizeof(QN));
-	Q* ps = (Q*)malloc(sizeof(Q));
-	if (p == NULL) {
-		perror("initqueue");
-		return NULL;
-	}
-	if (ps == NULL) {
-		perror("initqueue");
-		return NULL;
-	}
-	p->data = 0;
-	p->next = NULL;
-	ps->front = p;
-	ps->rear = p;
-	return ps;
-}
-//入队即尾插法
-Q* insertqueue(Q* p) {
-	QN* ps = (QN*)malloc(sizeof(QN));
-	if (ps == NULL) {
-		perror("insertqueue");
-		return;
-	}
-	printf("请输入数据\n");
-	scanf("%d", &(ps->data));
-	p->rear->next = ps;
-	ps->next = NULL;
-	p->rear = ps;
-	return p;
-}
-//出队
-void delqueue(Q* p) {
-	if (p->front == p->rear) {
-		printf("空队列\n");
-		return;
-	}
-	QN* ps = p->front->next;
-	p->front->next = ps->next;
-	if (p->rear == ps) {
-		p->rear = p->front;
-	}
-	free(ps);
-}
-//遍历
-void showqueue(Q* p) {
-	QN* ps = p->front->next;
-	while (ps != NULL) {
-		printf("%d ", ps->data);
-		ps = ps->next;
-	}
-	printf("\n");
-}
+//typedef int anytype;
+//typedef struct queuenode {
+//	anytype data;
+//	struct queuenode* next;
+//}QN;
+//typedef struct queue {
+//	QN* front;//QN的结构体指针表示队头
+//	QN* rear;
+//}Q;
+////初始化
+//Q* initqueue() {
+//	QN* p = (QN*)malloc(sizeof(QN));
+//	Q* ps = (Q*)malloc(sizeof(Q));
+//	if (p == NULL) {
+//		perror("initqueue");
+//		return NULL;
+//	}
+//	if (ps == NULL) {
+//		perror("initqueue");
+//		return NULL;
+//	}
+//	p->data = 0;
+//	p->next = NULL;
+//	ps->front = p;
+//	ps->rear = p;
+//	return ps;
+//}
+////入队即尾插法
+//Q* insertqueue(Q* p) {
+//	QN* ps = (QN*)malloc(sizeof(QN));
+//	if (ps == NULL) {
+//		perror("insertqueue");
+//		return;
+//	}
+//	printf("请输入数据\n");
+//	scanf("%d", &(ps->data));
+//	p->rear->next = ps;
+//	ps->next = NULL;
+//	p->rear = ps;
+//	return p;
+//}
+////出队
+//void delqueue(Q* p) {
+//	if (p->front == p->rear) {
+//		printf("空队列\n");
+//		return;
+//	}
+//	QN* ps = p->front->next;
+//	p->front->next = ps->next;
+//	if (p->rear == ps) {
+//		p->rear = p->front;
+//	}
+//	free(ps);
+//}
+////遍历
+//void showqueue(Q* p) {
+//	QN* ps = p->front->next;
+//	while (ps != NULL) {
+//		printf("%d ", ps->data);
+//		ps = ps->next;
+//	}
+//	printf("\n");
+//}
+//int main() {
+//	Q* p = initqueue();
+//	p=insertqueue(p);
+//	p=insertqueue(p);
+//	p=insertqueue(p);
+//	showqueue(p);
+//	delqueue(p);
+//	showqueue(p);
+//	return 0;
+//}
+//静态循环队列
+//#define MAXSIZE 10
+//typedef struct queue {
+//	int data[MAXSIZE];
+//	int front;
+//	int rear;
+//}Q;
+//void initqueue(Q* p) {
+//	p->front = 0;
+//	p->rear = 0;
+//	memset(p->data, 0, sizeof(p->data));
+//}
+////入队
+//void insertqueue(Q* p) {
+//	if ((p->rear + 1) % MAXSIZE == p->front) {
+//		printf("满了\n");
+//		return;
+//	}
+//	printf("请输入数据\n");
+//	scanf("%d", &(p->data[p->rear]));
+//	p->rear = (p->rear + 1) % MAXSIZE;
+//}
+////出队
+//void delqueue(Q* p) {
+//	if (p->rear  == p->front) {
+//		printf("空的\n");
+//		return;
+//	}
+//	//int a = p->data[p->front];
+//	p->front = (p->front + 1) % MAXSIZE;
+//}
+//void showqueue(Q* p) {
+//	for (int i = p->front; i <p->rear; i=(i+1)%MAXSIZE) {//循环队列的遍历
+//		printf("%d ", p->data[i]);
+//	}
+//	printf("\n");
+//}
+//int main() {
+//	Q qw;
+//	initqueue(&qw);
+//	insertqueue(&qw);
+//	insertqueue(&qw);
+//	insertqueue(&qw);
+//	showqueue(&qw);
+//	delqueue(&qw);
+//	showqueue(&qw);
+//	return 0;
+//}
 int main() {
-	Q* p = initqueue();
-	p=insertqueue(p);
-	p=insertqueue(p);
-	p=insertqueue(p);
-	showqueue(p);
-	delqueue(p);
-	showqueue(p);
+	SN* qw = initstudents();
+	addstudents(qw);
+	showstudents(qw);
 	return 0;
 }
