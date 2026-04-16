@@ -331,7 +331,7 @@
 //	showqueue(p);
 //	return 0;
 //}
-//静态循环队列
+//循环队列
 //#define MAXSIZE 10
 //typedef struct queue {
 //	int data[MAXSIZE];
@@ -379,9 +379,75 @@
 //	showqueue(&qw);
 //	return 0;
 //}
+void menu() {
+	printf("**************学生信息管理系统**************\n");
+	printf("*****1.添加学生信息**2.删除学生信息*********\n");
+	printf("*****3.更改学生信息**4.查找学生信息*********\n");
+	printf("*****5.学生信息排序**6.显示所有学生信息*****\n");
+	printf("**************0.退出管理系统****************\n");
+	printf("********************************************\n");
+}
 int main() {
 	SN* qw = initstudents();
-	addstudents(qw);
+	addstudents(qw);//1
+	/*addstudents(qw);
+	addstudents(qw);*/
+	showstudents(qw);//6
+	delstudents(qw);//2
+	showstudents(qw);
+	changestudents(qw);//3
+	showstudents(qw);
+	findstudents(qw);//5
 	showstudents(qw);
 	return 0;
 }
+//typedef char anytype;
+//typedef struct treenode {
+//	anytype data;
+//	struct treenode* lchild;//左节点
+//	struct treenode* rchild;//右节点
+//}TN;
+//typedef TN* bittree;
+//char str[] = "ashdw##sdw#sdfew";
+//int i = 0;
+////前序遍历
+//void preorder(bittree t) {
+//	if (t == NULL) {
+//		return;
+//	}
+//	printf("%c", t->data);
+//	preorder(t->lchild);//递归，先执行左节点再执行右节点，类似入栈和出栈，一定要先入栈再出栈
+//	preorder(t->rchild);
+//}
+////创建树
+//void creattree(bittree* t) {
+//	anytype ch;
+//	ch = str[i++];
+//	if (ch == '#') {
+//		*t = NULL;
+//	}
+//	else {
+//		*t = (TN*)malloc(sizeof(TN));
+//		(*t)->data = ch;
+//		creattree(&(*t)->lchild);//递归
+//		creattree(&(*t)->rchild);
+//	}
+//}
+////中序遍历
+//void inorder(bittree t) {
+//	if (t == NULL) {
+//		return;
+//	}
+//	inorder(t->lchild);//递归，从左往右执行，类似入栈和出栈，一定要先入栈再出栈
+//	printf("%c", t->data);
+//	inorder(t->rchild);
+//}
+////后序遍历
+//void afterorder(bittree t) {
+//	if (t == NULL) {
+//		return;
+//	}
+//	afterorder(t->lchild);//递归，从左往右执行，类似入栈和出栈，一定要先入栈再出栈
+//	afterorder(t->rchild);
+//	printf("%c", t->data);
+//}

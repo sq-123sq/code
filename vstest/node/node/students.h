@@ -6,10 +6,14 @@
 #define namesize 10
 #define idsize 20
 #define telsize 30
+#define sexsize 10
+#define addresssize 100
 typedef struct students {
 	char name[namesize];
+	char sex[sexsize];
 	char id[idsize];
 	char tel[telsize];
+	char address[addresssize];
 }ST;
 typedef struct studentsnode
 {
@@ -19,4 +23,7 @@ typedef struct studentsnode
 SN* initstudents();
 void addstudents(SN* p);
 void showstudents(SN* p);
+void delstudents(SN* p);
+void changestudents(SN* p);
+void findstudents(SN* p);
 #endif // !

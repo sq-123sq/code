@@ -1,5 +1,4 @@
-﻿  node.c
-  students.c
+﻿  students.c
 d:\gitcode\code\vstest\node\node\students.c(3): warning C4013: “malloc”未定义；假设外部返回 int
-  正在生成代码...
+d:\gitcode\code\vstest\node\node\students.c(61): warning C4013: “free”未定义；假设外部返回 int
   node.vcxproj -> D:\gitcode\code\vstest\node\Debug\node.exe
