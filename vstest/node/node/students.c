@@ -9,21 +9,32 @@ SN* initstudents() {
 	p1->next = NULL;
 	return p1;
 }
-void addstudents(SN* p) {
+SN* gettail(SN* p) {
 	SN* ps = p;
+	while (ps->next != NULL) {
+		ps = ps->next;
+	}
+	return ps;
+}
+int compare_name(const void* e1, const void* e2) {
+	return strcmp(((ST*)e1)->name, ((ST*)e2)->name);
+}
+SN* addstudents(SN* p) {
 	SN* pt = initstudents();
 	printf("请输入学生姓名\n");
-	scanf("%s", &((pt->data).name));
+	scanf("%s", (pt->data).name);
 	printf("请输入学生性别\n");
-	scanf("%s", &((pt->data).sex));
+	scanf("%s", (pt->data).sex);
 	printf("请输入学生学号\n");
-	scanf("%s", & ((pt->data).id));
+	scanf("%s", (pt->data).id);
 	printf("请输入学生电话\n");
-	scanf("%s", & ((pt->data).tel));
+	scanf("%s", (pt->data).tel);
 	printf("请输入学生住址\n");
-	scanf("%s", &((pt->data).address));
-	pt->next = ps->next;
-	ps->next = pt;
+	scanf("%s", (pt->data).address);
+	SN* tail = gettail(p);
+	tail->next = pt;
+	pt->next = NULL;
+	return p;
 }
 void showstudents(SN* p) {
 	SN* ps = p->next;
@@ -39,29 +50,25 @@ void showstudents(SN* p) {
 	}
 }
 void delstudents(SN* p) {
-	SN* ps = p->next;
+	SN* ps = p;
 	int k = -1;
 	char buf[namesize];
 	printf("请输入要删除的学生姓名\n");
 	scanf("%s", buf);
-	//if (ps== NULL) {
-	//	printf("空表\n");
-	//}
-	//////删除第一个数据
-	//if (strcmp(buf, (ps->data).name) == 0) {
-	//	SN* pt = ps->next;
-	//	ps->next = NULL;
-	//	free(pt);
-	//	printf("删除成功\n");
-	//}
-	while (ps!= NULL) {
-		if (strcmp(buf, (ps->data).name) == 0) {
-			SN* pt = ps->next;
-			ps->next = pt->next;
-			free(pt);
-			k = 0;
-			printf("删除成功\n");
-			break;
+	if (ps->next== NULL && strcmp(buf, (ps->next->data).name) == 0) {
+		free(ps);
+		p->next = NULL;
+		k = 0;
+		printf("删除成功\n");
+	}
+	while (ps->next!= NULL) {
+		if (strcmp(buf, (ps->next->data).name) == 0) {
+		        SN* pt = ps->next;
+				ps->next = pt->next;
+				free(pt);
+				k = 0;
+				printf("删除成功\n");
+				break;
 		}
 		ps = ps->next;
 	}
@@ -75,20 +82,20 @@ void changestudents(SN* p) {
 	printf("请输入要更改的学生姓名\n");
 	scanf("%s", &buf);
 	while (ps->next != NULL) {
-		if (strcmp(buf, (ps->data).name) == 0) {
+		if (strcmp(buf, (ps->next->data).name) == 0) {
 			SN* pt = initstudents();
 			printf("请输入学生姓名\n");
-			scanf("%s", &((pt->data).name));
+			scanf("%s", (pt->data).name);
 			printf("请输入学生性别\n");
-			scanf("%s", &((pt->data).sex));
+			scanf("%s", (pt->data).sex);
 			printf("请输入学生学号\n");
-			scanf("%s", &((pt->data).id));
+			scanf("%s", (pt->data).id);
 			printf("请输入学生电话\n");
-			scanf("%s", &((pt->data).tel));
+			scanf("%s", (pt->data).tel);
 			printf("请输入学生住址\n");
-			scanf("%s", &((pt->data).address));
+			scanf("%s", (pt->data).address);
 			ps->next = pt;
-			pt->next = ps->next;
+			pt->next=ps->next->next;
 			k = 0;
 			printf("更改成功\n");
 			break;
@@ -99,12 +106,12 @@ void changestudents(SN* p) {
 		printf("该学生不存在\n");
 }
 void findstudents(SN* p) {
-	SN* ps = p;
+	SN* ps = p->next;
 	int k = -1;
 	char buf[namesize];
 	printf("请输入要查找的学生姓名\n");
 	scanf("%s", &buf);
-	while (ps->next != NULL) {
+	while (ps!= NULL) {
 		if (strcmp(buf, (ps->data).name) == 0) {
 			printf("姓名：%s 性别：%s 学号：%s 电话：%s 地址：%s",
 				((ps->data).name),
@@ -120,4 +127,12 @@ void findstudents(SN* p) {
 	}
 	if (k == -1)
 		printf("该学生不存在\n");
+}
+void qsortstudents(SN* p) {
+	SN* ps = p->next;
+	int len = 0;
+	while (ps != NULL) {
+		ps = ps->next;
+		len++;
+	}
 }

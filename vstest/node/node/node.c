@@ -379,28 +379,30 @@
 //	showqueue(&qw);
 //	return 0;
 //}
-void menu() {
-	printf("**************学生信息管理系统**************\n");
-	printf("*****1.添加学生信息**2.删除学生信息*********\n");
-	printf("*****3.更改学生信息**4.查找学生信息*********\n");
-	printf("*****5.学生信息排序**6.显示所有学生信息*****\n");
-	printf("**************0.退出管理系统****************\n");
-	printf("********************************************\n");
-}
-int main() {
-	SN* qw = initstudents();
-	addstudents(qw);//1
-	/*addstudents(qw);
-	addstudents(qw);*/
-	showstudents(qw);//6
-	delstudents(qw);//2
-	showstudents(qw);
-	changestudents(qw);//3
-	showstudents(qw);
-	findstudents(qw);//5
-	showstudents(qw);
-	return 0;
-}
+//void menu() {
+//	printf("**************学生信息管理系统**************\n");
+//	printf("*****1.添加学生信息**2.删除学生信息*********\n");
+//	printf("*****3.更改学生信息**4.查找学生信息*********\n");
+//	printf("*****5.学生信息排序**6.显示所有学生信息*****\n");
+//	printf("**************0.退出管理系统****************\n");
+//	printf("********************************************\n");
+//}
+//int main() {
+//	SN* qw = initstudents();
+//	qw=addstudents(qw);
+//	qw = addstudents(qw);
+//	qw = addstudents(qw);
+//	showstudents(qw);//6
+//	delstudents(qw);//2
+//	showstudents(qw);
+//	changestudents(qw);//3
+//	showstudents(qw);
+//	findstudents(qw);//4
+//	showstudents(qw);
+//	qsortstudents(qw);//5
+//	showstudents(qw);
+//	return 0;
+//}
 //typedef char anytype;
 //typedef struct treenode {
 //	anytype data;
@@ -450,4 +452,14 @@ int main() {
 //	afterorder(t->lchild);//递归，从左往右执行，类似入栈和出栈，一定要先入栈再出栈
 //	afterorder(t->rchild);
 //	printf("%c", t->data);
+//}
+//typedef int anytype;
+//typedef struct bittree {
+//	anytype data;
+//	struct bittree* lchild;
+//	struct bittree* rchild;
+//}bit;
+//int main() {
+//	bit* root = NULL;//初始化
+//	return 0;
 //}

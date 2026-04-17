@@ -21,9 +21,11 @@ typedef struct studentsnode
 	struct studentsnode* next;
 }SN;
 SN* initstudents();
-void addstudents(SN* p);
+SN* addstudents(SN* p);
+SN* gettail(SN* p);
 void showstudents(SN* p);
 void delstudents(SN* p);
 void changestudents(SN* p);
 void findstudents(SN* p);
+void qsortstudents(SN* p);
 #endif // !
