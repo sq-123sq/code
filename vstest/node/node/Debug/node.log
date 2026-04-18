@@ -1,7 +1,18 @@
 ﻿  node.c
+d:\gitcode\code\vstest\node\node\node.c(486): warning C4013: “malloc”未定义；假设外部返回 int
+d:\gitcode\code\vstest\node\node\node.c(482): warning C4101: “parent”: 未引用的局部变量
+d:\gitcode\code\vstest\node\node\node.c(507): warning C4013: “free”未定义；假设外部返回 int
+d:\gitcode\code\vstest\node\node\node.c(536): warning C4047: “函数”:“bit1 *”与“bittree *”的间接级别不同
+d:\gitcode\code\vstest\node\node\node.c(536): warning C4024: “deltreenode”: 形参和实参 1 的类型不同
+d:\gitcode\code\vstest\node\node\node.c(539): warning C4047: “函数”:“bit1 *”与“bittree *”的间接级别不同
+d:\gitcode\code\vstest\node\node\node.c(539): warning C4024: “deltreenode”: 形参和实参 1 的类型不同
+d:\gitcode\code\vstest\node\node\node.c(558): warning C4047: “函数”:“bit1”与“bit **”的间接级别不同
+d:\gitcode\code\vstest\node\node\node.c(558): warning C4024: “perorder”: 形参和实参 1 的类型不同
   students.c
 d:\gitcode\code\vstest\node\node\students.c(3): warning C4013: “malloc”未定义；假设外部返回 int
 d:\gitcode\code\vstest\node\node\students.c(59): warning C4013: “free”未定义；假设外部返回 int
-d:\gitcode\code\vstest\node\node\students.c(138): warning C4013: “qsort”未定义；假设外部返回 int
   正在生成代码...
+d:\gitcode\code\vstest\node\node\node.c(541): warning C4715: “deltreenode”: 不是所有的控件路径都返回值
+d:\gitcode\code\vstest\node\node\node.c(500): warning C4716: “inserttreenode”: 必须返回一个值
+d:\gitcode\code\vstest\node\node\node.c(529): warning C4716: “delede”: 必须返回一个值
   node.vcxproj -> D:\gitcode\code\vstest\node\Debug\node.exe

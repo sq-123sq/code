@@ -453,13 +453,108 @@
 //	afterorder(t->rchild);
 //	printf("%c", t->data);
 //}
-//typedef int anytype;
-//typedef struct bittree {
-//	anytype data;
-//	struct bittree* lchild;
-//	struct bittree* rchild;
-//}bit;
-//int main() {
-//	bit* root = NULL;//初始化
-//	return 0;
-//}
+typedef int anytype;
+typedef struct bittree {
+	anytype data;
+	struct bittree* lchild;
+	struct bittree* rchild;
+}bit;
+typedef bit* bit1;
+//查找
+int findtreenode(bit1 t,int a,bit1 parent,bit1 *pos) {
+	if (t == NULL) {
+		*pos = parent;//parent指传入的树的父节点
+		return 0;
+	}
+	if (t->data == a) {
+		*pos = t;
+		return 1;
+	}
+	if (t->data > a) {
+		return findtreenode(t->lchild, a, t, pos);
+	}
+	else {
+		return findtreenode(t->rchild, a, t, pos);
+	}
+}
+//插入
+int inserttreenode(bit1* t, int a) {
+	bit1 parent, pos;
+	bit1 arr;
+	int b = findtreenode(*t, a, NULL, &pos);
+	if (b == 0) {
+		arr = (bit1)malloc(sizeof(bit));
+		arr->data = a;
+		arr->lchild = NULL;
+		arr->rchild = NULL;
+		if (pos == NULL) {
+			*t = arr;
+		}
+		if (a < pos->data) {
+			pos->lchild = arr;
+		}
+		else if (a > pos->data) {
+			pos->rchild = arr;
+		}
+	}
+}
+//删除有3种情况
+int delede(bit1* t) {
+	bit1 tmp, crr;
+	if ((*t)->lchild == NULL) {//树根的左孩子为空,树根是找到的那个数据的节点
+		tmp = *t;
+		*t = (*t)->rchild;
+		free(tmp);
+	}if ((*t)->rchild == NULL) {//树根的右孩子为空
+		tmp = *t;
+		*t = (*t)->lchild;
+		free(tmp);
+	}
+	else {//树根左右都不为空，这是往左寻找也可以往右
+		tmp = *t;
+		crr = (*t)->lchild;
+		while (crr->rchild != NULL) {
+			tmp = crr;
+			crr = crr->rchild;
+		}
+		(*t)->data = crr->data;
+		if (tmp != *t) {
+			tmp->rchild = crr->lchild;
+		}
+		else {
+			tmp->lchild = crr->lchild;
+		}
+		free(crr);
+	}
+}
+//删除数据
+int deltreenode(bit1* t,int a) {
+	if ((*t)->data == a) {
+		return delede(t);//如果数据相同则跳到删除函数
+	}
+	if ((*t)->data > a) {
+		return deltreenode((*t)->lchild, a);//数据不同则递归继续寻找
+	}
+	else if ((*t)->data < a) {
+		return deltreenode((*t)->rchild, a);
+	}
+}
+//前序遍历
+void perorder(bit1 t) {
+	if (t == NULL) {
+		return;
+	}
+	printf("%d ", t->data);
+	perorder(t->lchild);
+	perorder(t->rchild);
+}
+int main() {
+	bit* root = NULL;//初始化
+	int arr[] = { 67,45,34,23,90,45,12 };
+	int sz = sizeof(arr);
+	for (int i = 0; i < sz; i++) {
+		inserttreenode(&root, arr[i]);
+	}
+	perorder(&root);
+	return 0;
+}
