@@ -19,6 +19,15 @@ SN* gettail(SN* p) {
 int compare_name(const void* e1, const void* e2) {
 	return strcmp(((ST*)e1)->name, ((ST*)e2)->name);
 }
+int compare_id(const void* e1, const void* e2) {
+	return strcmp(((ST*)e1)->id, ((ST*)e2)->id);
+}
+int compare_tel(const void* e1, const void* e2) {
+	return strcmp(((ST*)e1)->tel, ((ST*)e2)->tel);
+}
+int compare_address(const void* e1, const void* e2) {
+	return strcmp(((ST*)e1)->address, ((ST*)e2)->address);
+}
 SN* addstudents(SN* p) {
 	SN* pt = initstudents();
 	printf("请输入学生姓名\n");
@@ -38,6 +47,10 @@ SN* addstudents(SN* p) {
 }
 void showstudents(SN* p) {
 	SN* ps = p->next;
+	if (ps == NULL) {
+		printf("学生信息不存在\n");
+		return;
+	}
 	while (ps != NULL) {
 		printf("姓名：%s 性别：%s 学号：%s 电话：%s 地址：%s", 
 			((ps->data).name),
@@ -120,7 +133,7 @@ void findstudents(SN* p) {
 				((ps->data).tel),
 				((ps->data).address));
 			k = 0;
-			printf("查找成功\n");
+			printf("\n查找成功\n");
 			break;
 		}
 		ps = ps->next;
@@ -128,11 +141,62 @@ void findstudents(SN* p) {
 	if (k == -1)
 		printf("该学生不存在\n");
 }
-void qsortstudents(SN* p) {
+void menu1() {
+	printf("**************学生信息排序**************\n");
+	printf("*****1.按姓名排序**2.按学号排序*********\n");
+	printf("*****3.按电话排序**4.按地址排序*********\n");
+	printf("******0.退出学生信息排序****************\n");
+	printf("****************************************\n");
+}
+void qsortstudents1(SN* p,int(*cmp)(const void*,const void* )) {//cmp为函数指针
 	SN* ps = p->next;
 	int len = 0;
 	while (ps != NULL) {
 		ps = ps->next;
 		len++;
+	}
+	ST* arr = (ST*)malloc(sizeof(ST)*len);
+	ps = p->next;
+	for (int i = 0; i < len; i++) {
+		arr[i] = ps->data;
+		ps = ps->next;
+	}
+	qsort(arr, len, sizeof(ST), cmp);
+	ps = p->next;
+	for (int i = 0; i < len; i++) {
+		ps->data = arr[i];
+		ps = ps->next;
+	}
+	free(arr);
+}
+void qsortstudents(SN* p) {
+	menu1();
+	int input;
+	printf("请选择排序方式\n");
+	scanf("%d", &input);
+	switch (input)
+	{
+	case 1:
+		qsortstudents1(p, compare_name);
+		printf("按姓名排序成功\n");
+		break;
+	case 2:
+		qsortstudents1(p, compare_id);
+		printf("按学号排序成功\n");
+		break;
+	case 3:
+		qsortstudents1(p, compare_tel);
+		printf("按电话排序成功\n");
+		break;
+	case 4:
+		qsortstudents1(p, compare_address);
+		printf("按地址排序成功\n");
+		break;
+	case 0:
+		printf("退出学生信息排序\n");
+		break;
+	default:
+		printf("输入错误，退出排序程序\n");
+		break;
 	}
 }
