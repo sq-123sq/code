@@ -379,52 +379,52 @@
 //	showqueue(&qw);
 //	return 0;
 //}
-void menu() {
-	printf("**************学生信息管理系统**************\n");
-	printf("*****1.添加学生信息**2.删除学生信息*********\n");
-	printf("*****3.更改学生信息**4.查找学生信息*********\n");
-	printf("*****5.学生信息排序**6.显示所有学生信息*****\n");
-	printf("**************0.退出管理系统****************\n");
-	printf("********************************************\n");
-}
-int main() {
-	SN* qw = initstudents();
-	int input = 0;
-	do
-	{
-		menu();
-		printf("请输入选项\n");
-		scanf("%d", &input);
-		switch (input)
-		{
-		case 1:
-			addstudents(qw);
-			break;
-		case 2:
-			delstudents(qw);
-			break;
-		case 3:
-			changestudents(qw);
-			break;
-		case 4:
-			findstudents(qw);
-			break;
-		case 5:
-			qsortstudents(qw);
-			break;
-		case 6:
-			showstudents(qw);
-			break;
-		case 0:
-			printf("退出管理系统\n");
-			break;
-		default:
-			printf("输入错误，请重新输入\n");
-			break;
-		}
-	} while (input);
-	return 0;
-}
+//void menu() {
+//	printf("**************学生信息管理系统**************\n");
+//	printf("*****1.添加学生信息**2.删除学生信息*********\n");
+//	printf("*****3.更改学生信息**4.查找学生信息*********\n");
+//	printf("*****5.学生信息排序**6.显示所有学生信息*****\n");
+//	printf("**************0.退出管理系统****************\n");
+//	printf("********************************************\n");
+//}
+//int main() {
+//	SN* qw = initstudents();
+//	int input = 0;
+//	do
+//	{
+//		menu();
+//		printf("请输入选项\n");
+//		scanf("%d", &input);
+//		switch (input)
+//		{
+//		case 1:
+//			addstudents(qw);
+//			break;
+//		case 2:
+//			delstudents(qw);
+//			break;
+//		case 3:
+//			changestudents(qw);
+//			break;
+//		case 4:
+//			findstudents(qw);
+//			break;
+//		case 5:
+//			qsortstudents(qw);
+//			break;
+//		case 6:
+//			showstudents(qw);
+//			break;
+//		case 0:
+//			printf("退出管理系统\n");
+//			break;
+//		default:
+//			printf("输入错误，请重新输入\n");
+//			break;
+//		}
+//	} while (input);
+//	return 0;
+//}
 //typedef char anytype;
 //typedef struct treenode {
 //	anytype data;
@@ -621,3 +621,114 @@ int main() {
 //	}
 //	return 0;
 //}
+//typedef struct arrs {
+//	int data;
+//	struct arrs* next;
+//}node;
+//node* inits() {
+//	node* p = (node*)malloc(sizeof(node));
+//	if (p == NULL) {
+//		perror("inits");
+//		return NULL;
+//	}
+//	p->data = 0;
+//	p->next = NULL;
+//	return p;
+//}
+//int addnode(node* p) {
+//	node* ps = p->next;
+//	int sum = 0;
+//	while (ps != NULL) {
+//		sum = sum + (ps->data);
+//		ps = ps->next;
+//	}
+//	return sum;
+//}
+//void insertnode(node* p, int a) {
+//	node* pt = inits();
+//	pt->data=a;
+//	pt->next = p->next;
+//	p->next = pt;
+//}
+//int main() {
+//	int n = 0;
+//	printf("请输入一个正整数n\n");
+//	scanf("%d", &n);
+//	int* arr = (int*)malloc(sizeof(int)*n);
+//	if (arr == NULL) {
+//		perror("数组错误\n");
+//	}
+//	printf("请输入n个正整数数字\n");
+//	for (int i = 0; i < n; i++) {
+//		scanf("%d", &arr[i]);
+//	}
+//	node* ps = inits();
+//	for (int i = 0; i < n; i++) {
+//		insertnode(ps, arr[i]);
+//	}
+//	int sum = addnode(ps);
+//	printf("%d", sum);
+//	free(arr);
+//	return 0;
+//}
+int cal(int* p, int n) {
+	int sum = 0;
+	for (int i = 0; i < n; i++) {
+		sum = sum + (*(p + i));
+	}
+	return sum;
+}
+void sort(int* arr, int n) {
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n - i - 1; j++) {
+			if (arr[j] > arr[j + 1]) {
+				int tmp = arr[j];
+				arr[j] = arr[j + 1];
+				arr[j + 1] = tmp;
+			}
+		}
+	}
+}
+int main() {
+	/*int arr[6] = { 0 };
+	printf("请输入6个整数\n");
+	for (int i = 0; i < 6; i++) {
+		scanf("%d", &arr[i]);
+	}
+	int* p = arr;
+	for (int i = 0; i < 6; i++) {
+		printf("%d ", *(p + i));
+	}*/
+	/*int n = 0;
+	printf("请输入一个正整数n\n");
+	scanf("%d", &n);
+	int* arr = (int*)malloc(sizeof(int)*n);
+	if (arr == NULL) {
+		perror("数组错误");
+	}
+	printf("请输入n个正整数\n");
+	for (int i = 0; i < n; i++) {
+		scanf("%d", &arr[i]);
+	}
+	int* p = arr;
+	int sum = cal(p,n);
+	printf("%d", sum);
+	free(arr);*/
+	/*int n = 0;
+	printf("请输入一个正整数n\n");
+	scanf("%d", &n);
+	int* arr = (int*)malloc(sizeof(int)*n);
+	if (arr == NULL) {
+		perror("数组错误");
+	}
+	printf("请输入n个正整数\n");
+	for (int i = 0; i < n; i++) {
+		scanf("%d ", &arr[i]);
+	}
+	sort(arr, n);
+	for (int i = 0; i < n; i++) {
+		printf("%d ", arr[i]);
+	}
+	free(arr);*/
+	return 0;
+}
