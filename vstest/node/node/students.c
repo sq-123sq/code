@@ -28,6 +28,40 @@ int compare_tel(const void* e1, const void* e2) {
 int compare_address(const void* e1, const void* e2) {
 	return strcmp(((ST*)e1)->address, ((ST*)e2)->address);
 }
+void freadstudents(SN* p) {
+	SN* tail = p;
+	ST tmp;
+	FILE* pf = fopen("node.txt", "rb");
+	if (pf == NULL) {
+		perror("freadstudents");
+		return;
+	}
+	while (fread(&tmp, sizeof(ST), 1, pf)==1)
+	{
+		SN* node = (SN*)malloc(sizeof(SN));
+		if (node == NULL) {
+			perror("freadstudents");
+			return;
+		}
+		node->data = tmp;
+		node->next = NULL;
+		while (tail->next!=NULL)
+		{
+			tail=tail->next;
+		}
+		tail->next = node;
+		/*printf("姓名：%s 性别：%s 学号：%s 电话：%s 地址：%s",
+			((node->data).name),
+			((node->data).sex),
+			((node->data).id),
+			((node->data).tel),
+			((node->data).address));
+		printf("\n");*/
+	}
+	printf("数据加载成功\n");
+	fclose(pf);
+	pf = NULL;
+}
 SN* addstudents(SN* p) {
 	SN* pt = initstudents();
 	printf("请输入学生姓名\n");
@@ -199,4 +233,32 @@ void qsortstudents(SN* p) {
 		printf("输入错误，退出排序程序\n");
 		break;
 	}
+}
+void freestudents(SN* p) {
+	SN* ps = p->next;
+	SN* pt=NULL;
+	while (ps!=NULL)
+	{
+		ps->next = pt;
+		free(ps);
+		ps = pt;
+	}
+	p->next = ps;
+	printf("释放空间成功\n");
+}
+void fwritestudents(SN* p) {
+	SN* ps = p->next;
+	FILE* pf = fopen("node.txt", "wb");
+	if (pf == NULL) {
+		perror("fwritestudents");
+		return;
+	}
+	while (ps!=NULL)
+	{
+		fwrite(&ps->data, sizeof(ST), 1, pf);
+		ps = ps->next;
+	}
+	printf("数据载入成功\n");
+	fclose(pf);
+	pf = NULL;
 }

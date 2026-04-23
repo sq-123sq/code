@@ -379,52 +379,55 @@
 //	showqueue(&qw);
 //	return 0;
 //}
-//void menu() {
-//	printf("**************学生信息管理系统**************\n");
-//	printf("*****1.添加学生信息**2.删除学生信息*********\n");
-//	printf("*****3.更改学生信息**4.查找学生信息*********\n");
-//	printf("*****5.学生信息排序**6.显示所有学生信息*****\n");
-//	printf("**************0.退出管理系统****************\n");
-//	printf("********************************************\n");
-//}
-//int main() {
-//	SN* qw = initstudents();
-//	int input = 0;
-//	do
-//	{
-//		menu();
-//		printf("请输入选项\n");
-//		scanf("%d", &input);
-//		switch (input)
-//		{
-//		case 1:
-//			addstudents(qw);
-//			break;
-//		case 2:
-//			delstudents(qw);
-//			break;
-//		case 3:
-//			changestudents(qw);
-//			break;
-//		case 4:
-//			findstudents(qw);
-//			break;
-//		case 5:
-//			qsortstudents(qw);
-//			break;
-//		case 6:
-//			showstudents(qw);
-//			break;
-//		case 0:
-//			printf("退出管理系统\n");
-//			break;
-//		default:
-//			printf("输入错误，请重新输入\n");
-//			break;
-//		}
-//	} while (input);
-//	return 0;
-//}
+void menu() {
+	printf("**************学生信息管理系统**************\n");
+	printf("*****1.添加学生信息**2.删除学生信息*********\n");
+	printf("*****3.更改学生信息**4.查找学生信息*********\n");
+	printf("*****5.学生信息排序**6.显示所有学生信息*****\n");
+	printf("**************0.退出管理系统****************\n");
+	printf("********************************************\n");
+}
+int main() {
+	SN* qw = initstudents();
+	freadstudents(qw);
+	int input = 0;
+	do
+	{
+		menu();
+		printf("请输入选项\n");
+		scanf("%d", &input);
+		switch (input)
+		{
+		case 1:
+			addstudents(qw);
+			break;
+		case 2:
+			delstudents(qw);
+			break;
+		case 3:
+			changestudents(qw);
+			break;
+		case 4:
+			findstudents(qw);
+			break;
+		case 5:
+			qsortstudents(qw);
+			break;
+		case 6:
+			showstudents(qw);
+			break;
+		case 0:
+			fwritestudents(qw);
+			freestudents(qw);
+			printf("退出管理系统\n");
+			break;
+		default:
+			printf("输入错误，请重新输入\n");
+			break;
+		}
+	} while (input);
+	return 0;
+}
 //typedef char anytype;
 //typedef struct treenode {
 //	anytype data;
@@ -671,25 +674,25 @@
 //	free(arr);
 //	return 0;
 //}
-int cal(int* p, int n) {
-	int sum = 0;
-	for (int i = 0; i < n; i++) {
-		sum = sum + (*(p + i));
-	}
-	return sum;
-}
-void sort(int* arr, int n) {
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n - i - 1; j++) {
-			if (arr[j] > arr[j + 1]) {
-				int tmp = arr[j];
-				arr[j] = arr[j + 1];
-				arr[j + 1] = tmp;
-			}
-		}
-	}
-}
-int main() {
+//int cal(int* p, int n) {
+//	int sum = 0;
+//	for (int i = 0; i < n; i++) {
+//		sum = sum + (*(p + i));
+//	}
+//	return sum;
+//}
+//void sort(int* arr, int n) {
+//	for (int i = 0; i < n; i++) {
+//		for (int j = 0; j < n - i - 1; j++) {
+//			if (arr[j] > arr[j + 1]) {
+//				int tmp = arr[j];
+//				arr[j] = arr[j + 1];
+//				arr[j + 1] = tmp;
+//			}
+//		}
+//	}
+//}
+//int main() {
 	/*int arr[6] = { 0 };
 	printf("请输入6个整数\n");
 	for (int i = 0; i < 6; i++) {
@@ -730,5 +733,5 @@ int main() {
 		printf("%d ", arr[i]);
 	}
 	free(arr);*/
-	return 0;
-}
+//	return 0;
+//}
