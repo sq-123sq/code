@@ -1,0 +1,16 @@
+# VS 项目缓存/配置文件
+.vs/
+*.suo
+*.user
+*.db
+*.ipch
+
+# 编译生成的 Debug/Release 文件
+Debug/
+Release/
+*.exe
+*.ilk
+*.pdb
+*.obj
+*.tlog
+*.log
