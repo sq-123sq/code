@@ -379,55 +379,55 @@
 //	showqueue(&qw);
 //	return 0;
 //}
-void menu() {
-	printf("**************学生信息管理系统**************\n");
-	printf("*****1.添加学生信息**2.删除学生信息*********\n");
-	printf("*****3.更改学生信息**4.查找学生信息*********\n");
-	printf("*****5.学生信息排序**6.显示所有学生信息*****\n");
-	printf("**************0.退出管理系统****************\n");
-	printf("********************************************\n");
-}
-int main() {
-	SN* qw = initstudents();
-	freadstudents(qw);
-	int input = 0;
-	do
-	{
-		menu();
-		printf("请输入选项\n");
-		scanf("%d", &input);
-		switch (input)
-		{
-		case 1:
-			addstudents(qw);
-			break;
-		case 2:
-			delstudents(qw);
-			break;
-		case 3:
-			changestudents(qw);
-			break;
-		case 4:
-			findstudents(qw);
-			break;
-		case 5:
-			qsortstudents(qw);
-			break;
-		case 6:
-			showstudents(qw);
-			break;
-		case 0:
-			fwritestudents(qw);
-			freestudents(qw);
-			printf("退出管理系统\n");
-			break;
-		default:
-			printf("输入错误，请重新输入\n");
-			break;
-		}
-	} while (input);
-	return 0;
-}
+//void menu() {
+//	printf("**************学生信息管理系统**************\n");
+//	printf("*****1.添加学生信息**2.删除学生信息*********\n");
+//	printf("*****3.更改学生信息**4.查找学生信息*********\n");
+//	printf("*****5.学生信息排序**6.显示所有学生信息*****\n");
+//	printf("**************0.退出管理系统****************\n");
+//	printf("********************************************\n");
+//}
+//int main() {
+//	SN* qw = initstudents();
+//	freadstudents(qw);
+//	int input = 0;
+//	do
+//	{
+//		menu();
+//		printf("请输入选项\n");
+//		scanf("%d", &input);
+//		switch (input)
+//		{
+//		case 1:
+//			addstudents(qw);
+//			break;
+//		case 2:
+//			delstudents(qw);
+//			break;
+//		case 3:
+//			changestudents(qw);
+//			break;
+//		case 4:
+//			findstudents(qw);
+//			break;
+//		case 5:
+//			qsortstudents(qw);
+//			break;
+//		case 6:
+//			showstudents(qw);
+//			break;
+//		case 0:
+//			fwritestudents(qw);
+//			freestudents(qw);
+//			printf("退出管理系统\n");
+//			break;
+//		default:
+//			printf("输入错误，请重新输入\n");
+//			break;
+//		}
+//	} while (input);
+//	return 0;
+//}
 //typedef char anytype;
 //typedef struct treenode {
 //	anytype data;
@@ -735,3 +735,109 @@ int main() {
 	free(arr);*/
 //	return 0;
 //}
+typedef struct arr_node {
+	int data;
+	struct arr_node* next;
+}an;
+an* initsan() {
+	an* ps = (an*)malloc(sizeof(an));
+	if (ps == NULL) {
+		perror("initsan");
+		return NULL;
+	}
+	ps->data = 0;
+	ps->next = NULL;
+}
+an* transform(int* arr,an* p,int a) {
+	an* tail = p;
+	for (int i = 0; i < a; i++) {
+		an* pt = initsan();
+		pt->data = arr[i];
+		tail->next = pt;//最好用尾插法保证顺序
+		pt->next = NULL;
+		tail = pt;//让尾节点往后移方便后面继续添加数据，很重要不能少
+	}
+	return p;//返回的是头结点此时后面已添加数据
+}
+void showan(an* p) {
+	an* ps = p->next;
+	while (ps != NULL) {
+		printf("%d ", ps->data);
+		ps = ps->next;
+	}
+	printf("\n");
+}
+int lenan(an* p) {
+	an* ps = p->next;
+	int len = 0;
+	while (ps != NULL){
+		len++;//len++放前放后结果都一样
+		ps = ps->next;
+	}
+	return len;
+}
+an* adddata(an* p1, an* p2,an* p3,int a,int b) {
+	an* ps1 = p1->next;
+	an* ps2 = p2->next;
+	an* tail= p3;
+	if (a > b) {
+		while (ps2 != NULL) {
+			an* p = initsan();
+			p->data = (ps1->data) + (ps2->data);
+			p->next = NULL;
+			tail->next = p;
+			tail = p;
+			ps1 = ps1->next;
+			ps2 = ps2->next;
+		}
+	}
+	else {
+		while (ps1 != NULL) {
+			an* p = initsan();
+			p->data = (ps1->data) + (ps2->data);
+			p->next = NULL;
+			tail->next = p;
+			tail = p;
+			ps1 = ps1->next;
+			ps2 = ps2->next;
+		}
+	}
+	return p3;
+}
+int main() {
+	int a = 0;
+	int b = 0;
+	printf("请输入一个正整数确定第一个数组的元素个数\n");
+	scanf("%d", &a);
+	int* arr1 = (int*)malloc(sizeof(int)*a);
+	if (arr1 == NULL) {
+		perror("数组错误");
+	}
+	printf("请输入第一个数组的元素\n");
+	for (int i = 0; i < a; i++) {
+		scanf("%d", &arr1[i]);
+	}
+	printf("请输入一个正整数确定第二个数组的元素个数\n");
+	scanf("%d", &b);
+	int* arr2 = (int*)malloc(sizeof(int)*b);
+	if (arr2 == NULL) {
+		perror("数组错误");
+	}
+	printf("请输入第二个数组的元素\n");
+	for (int i = 0; i < b; i++) {
+		scanf("%d", &arr2[i]);
+	}
+	an* p1 = initsan();
+	an* p2 = initsan();
+	an* p3 = initsan();
+	p1=transform(arr1, p1, a);//转换为链表
+	p2=transform(arr2, p2, a);
+	printf("二者数组各元素和为\n");
+	p3 = adddata(p1,p2,p3,a,b);
+	showan(p3);
+	free(arr1);
+	free(arr2);
+	arr1 = NULL;
+	arr2 = NULL;
+	return 0;
+}

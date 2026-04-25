@@ -58,7 +58,7 @@ void freadstudents(SN* p) {
 			((node->data).address));
 		printf("\n");*/
 	}
-	printf("数据加载成功\n");
+	printf("数据加载成功，可选择显示信息\n");
 	fclose(pf);
 	pf = NULL;
 }
