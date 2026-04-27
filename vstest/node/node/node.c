@@ -735,109 +735,219 @@
 	free(arr);*/
 //	return 0;
 //}
-typedef struct arr_node {
-	int data;
-	struct arr_node* next;
-}an;
-an* initsan() {
-	an* ps = (an*)malloc(sizeof(an));
-	if (ps == NULL) {
-		perror("initsan");
-		return NULL;
-	}
-	ps->data = 0;
-	ps->next = NULL;
-}
-an* transform(int* arr,an* p,int a) {
-	an* tail = p;
-	for (int i = 0; i < a; i++) {
-		an* pt = initsan();
-		pt->data = arr[i];
-		tail->next = pt;//最好用尾插法保证顺序
-		pt->next = NULL;
-		tail = pt;//让尾节点往后移方便后面继续添加数据，很重要不能少
-	}
-	return p;//返回的是头结点此时后面已添加数据
-}
-void showan(an* p) {
-	an* ps = p->next;
-	while (ps != NULL) {
-		printf("%d ", ps->data);
-		ps = ps->next;
-	}
-	printf("\n");
-}
-int lenan(an* p) {
-	an* ps = p->next;
-	int len = 0;
-	while (ps != NULL){
-		len++;//len++放前放后结果都一样
-		ps = ps->next;
-	}
-	return len;
-}
-an* adddata(an* p1, an* p2,an* p3,int a,int b) {
-	an* ps1 = p1->next;
-	an* ps2 = p2->next;
-	an* tail= p3;
-	if (a > b) {
-		while (ps2 != NULL) {
-			an* p = initsan();
-			p->data = (ps1->data) + (ps2->data);
-			p->next = NULL;
-			tail->next = p;
-			tail = p;
-			ps1 = ps1->next;
-			ps2 = ps2->next;
-		}
-	}
-	else {
-		while (ps1 != NULL) {
-			an* p = initsan();
-			p->data = (ps1->data) + (ps2->data);
-			p->next = NULL;
-			tail->next = p;
-			tail = p;
-			ps1 = ps1->next;
-			ps2 = ps2->next;
-		}
-	}
-	return p3;
-}
+//typedef struct arr_node {
+//	int data;
+//	struct arr_node* next;
+//}an;
+//an* initsan() {
+//	an* ps = (an*)malloc(sizeof(an));
+//	if (ps == NULL) {
+//		perror("initsan");
+//		return NULL;
+//	}
+//	ps->data = 0;
+//	ps->next = NULL;
+//}
+//an* transform(int* arr,an* p,int a) {
+//	an* tail = p;
+//	for (int i = 0; i < a; i++) {
+//		an* pt = initsan();
+//		pt->data = arr[i];
+//		tail->next = pt;//最好用尾插法保证顺序
+//		pt->next = NULL;
+//		tail = pt;//让尾节点往后移方便后面继续添加数据，很重要不能少
+//	}
+//	return p;//返回的是头结点此时后面已添加数据
+//}
+//void showan(an* p) {
+//	an* ps = p->next;
+//	while (ps != NULL) {
+//		printf("%d ", ps->data);
+//		ps = ps->next;
+//	}
+//	printf("\n");
+//}
+//int lenan(an* p) {
+//	an* ps = p->next;
+//	int len = 0;
+//	while (ps != NULL){
+//		len++;//len++放前放后结果都一样
+//		ps = ps->next;
+//	}
+//	return len;
+//}
+//an* adddata(an* p1, an* p2,an* p3,int a,int b) {
+//	an* ps1 = p1->next;
+//	an* ps2 = p2->next;
+//	an* tail= p3;
+//	if (a > b) {
+//		while (ps2 != NULL) {
+//			an* p = initsan();
+//			p->data = (ps1->data) + (ps2->data);
+//			p->next = NULL;
+//			tail->next = p;
+//			tail = p;
+//			ps1 = ps1->next;
+//			ps2 = ps2->next;
+//		}
+//	}
+//	else {
+//		while (ps1 != NULL) {
+//			an* p = initsan();
+//			p->data = (ps1->data) + (ps2->data);
+//			p->next = NULL;
+//			tail->next = p;
+//			tail = p;
+//			ps1 = ps1->next;
+//			ps2 = ps2->next;
+//		}
+//	}
+//	return p3;
+//}
+//int main() {
+//	int a = 0;
+//	int b = 0;
+//	printf("请输入一个正整数确定第一个数组的元素个数\n");
+//	scanf("%d", &a);
+//	int* arr1 = (int*)malloc(sizeof(int)*a);
+//	if (arr1 == NULL) {
+//		perror("数组错误");
+//	}
+//	printf("请输入第一个数组的元素\n");
+//	for (int i = 0; i < a; i++) {
+//		scanf("%d", &arr1[i]);
+//	}
+//	printf("请输入一个正整数确定第二个数组的元素个数\n");
+//	scanf("%d", &b);
+//	int* arr2 = (int*)malloc(sizeof(int)*b);
+//	if (arr2 == NULL) {
+//		perror("数组错误");
+//	}
+//	printf("请输入第二个数组的元素\n");
+//	for (int i = 0; i < b; i++) {
+//		scanf("%d", &arr2[i]);
+//	}
+//	an* p1 = initsan();
+//	an* p2 = initsan();
+//	an* p3 = initsan();
+//	p1=transform(arr1, p1, a);//转换为链表
+//	p2=transform(arr2, p2, a);
+//	printf("二者数组各元素和为\n");
+//	p3 = adddata(p1,p2,p3,a,b);
+//	showan(p3);
+//	free(arr1);
+//	free(arr2);
+//	arr1 = NULL;
+//	arr2 = NULL;
+//	return 0;
+//}
+//int find_same(int* arr, int sz) {
+//	for (int i = 0; i < sz; i++) {
+//		for (int j = i+1; j < sz; j++) {
+//			if (arr[i] == arr[j]) {
+//				return arr[i];
+//			}
+//		}
+//	}
+//	return -1;
+//}
+//int main() {
+//	int* arr = (int*)malloc(sizeof(int) * 7);
+//	if (arr == NULL) {
+//		perror("数组错误");
+//		return 1;
+//	}
+//	printf("请输入7个正整数\n");
+//	for (int i = 0; i < 7; i++) {
+//		scanf("%d", &arr[i]);
+//	}
+//	int result = find_same(arr, 7);
+//	if (result == -1) {
+//		printf("没有重复数\n");
+//	}
+//	else {
+//		printf("重复的数为: %d\n", result);
+//	}
+//	free(arr);
+//	arr = NULL;
+//	return 0;
+//}
+//#define col 3//行
+//#define row 3//列
+//int find_target(int* arr, int a) {
+//	for (int i = 0; i < col; i++) {
+//		for (int j = 0; j < row; j++) {
+//			if (a == arr[i*row + j]) {
+//				return 1;
+//			}
+//		}
+//	}
+//	return 0;
+//}
+//void qsort_arr(int* arr,int sz) {
+//	int k;
+//	for (int i = 0; i < sz; i++) {
+//		k = 1;
+//		for (int j = 0; j < sz - i - 1; j++) {
+//			if (arr[j] > arr[j + 1]) {
+//				int tmp = arr[j];
+//				arr[j] = arr[j + 1];
+//				arr[j + 1] = tmp;
+//				k = 0;
+//			}
+//		}
+//		if (k == 1) break;
+//	}
+//}
+//int main() {
+//	int* arr = (int*)malloc(sizeof(int)*col*row);
+//	printf("请输入%d个正整数", col*row);
+//	for (int i = 0; i < col; i++) {
+//		for (int j = 0; j < row; j++) {
+//			scanf("%d",&arr[i*row+j]);
+//		}
+//	}
+//	qsort_arr(arr,row*col);
+//	for (int i = 0; i < col; i++) {
+//		for (int j = 0; j < row; j++) {
+//			printf(" %d", arr[i*row + j]);
+//		}
+//		printf("\n");
+//	}
+//	int target = 0;
+//	printf("请输入一个目标数\n");
+//	scanf("%d", &target);
+//	int result=find_target(arr, target);
+//	if (result == 0) {
+//		printf("找不到\n");
+//	}
+//	else {
+//		printf("找到了\n");
+//	}
+//	return 0;
+//}
+//#define size 20
+//int main() {
+//	char buf[size];
+//	char arr[size];
+//	int k = 0;
+//	printf("请输入一个字符串\n");
+//	gets(buf);
+//	for (int i = 0; i < strlen(buf); i++) {
+//		if (buf[i]==' ') {
+//			arr[k++] = '%';
+//			arr[k++] = '2';
+//			arr[k++] = '0';
+//		}
+//		else {
+//			arr[k++] = buf[i];
+//		}
+//	}
+//	arr[k] = '\0';
+//	printf("%s", arr);
+//	return 0;
+//}
 int main() {
-	int a = 0;
-	int b = 0;
-	printf("请输入一个正整数确定第一个数组的元素个数\n");
-	scanf("%d", &a);
-	int* arr1 = (int*)malloc(sizeof(int)*a);
-	if (arr1 == NULL) {
-		perror("数组错误");
-	}
-	printf("请输入第一个数组的元素\n");
-	for (int i = 0; i < a; i++) {
-		scanf("%d", &arr1[i]);
-	}
-	printf("请输入一个正整数确定第二个数组的元素个数\n");
-	scanf("%d", &b);
-	int* arr2 = (int*)malloc(sizeof(int)*b);
-	if (arr2 == NULL) {
-		perror("数组错误");
-	}
-	printf("请输入第二个数组的元素\n");
-	for (int i = 0; i < b; i++) {
-		scanf("%d", &arr2[i]);
-	}
-	an* p1 = initsan();
-	an* p2 = initsan();
-	an* p3 = initsan();
-	p1=transform(arr1, p1, a);//转换为链表
-	p2=transform(arr2, p2, a);
-	printf("二者数组各元素和为\n");
-	p3 = adddata(p1,p2,p3,a,b);
-	showan(p3);
-	free(arr1);
-	free(arr2);
-	arr1 = NULL;
-	arr2 = NULL;
+
 	return 0;
 }
