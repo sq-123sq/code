@@ -1030,88 +1030,114 @@
 //	printf("%d", sum);
 //	return 0;
 //}
-#define n 5
-int compe_arr(const void* e1, const void* e2) {
-	return *(int*)e1 - *(int*)e2;
-}
-void show_arr(int* arr) {
-	for (int i = 0; i < n; i++) {
-		printf("%d ", arr[i]);
-	}
-}
-//for循环复杂度高，数据多不适用
+//#define n 5
+//int compe_arr(const void* e1, const void* e2) {
+//	return *(int*)e1 - *(int*)e2;
+//}
+//void show_arr(int* arr) {
+//	for (int i = 0; i < n; i++) {
+//		printf("%d ", arr[i]);
+//	}
+//}
+////for循环复杂度高，数据多不适用
+////int* find_add_arr(int* arr, int target) {
+////	int* arr1 = (int*)malloc(sizeof(int) * 2);
+////	if (arr1 == NULL) {
+////		perror("arr1");
+////		return NULL;
+////	}
+////	for (int i = 0; i < n; i++) {
+////		for (int j = i+1; j < n; j++) {
+////			if (arr[i] + arr[j] == target) {
+////				arr1[0] = arr[i];
+////				arr1[1] = arr[j];
+////				return arr1;
+////				break;
+////			}
+////		}
+////	}
+////	free(arr1);
+////	return NULL;
+////}
+////双指针方法复杂度更低，适合大量数据
 //int* find_add_arr(int* arr, int target) {
 //	int* arr1 = (int*)malloc(sizeof(int) * 2);
 //	if (arr1 == NULL) {
 //		perror("arr1");
 //		return NULL;
 //	}
-//	for (int i = 0; i < n; i++) {
-//		for (int j = i+1; j < n; j++) {
-//			if (arr[i] + arr[j] == target) {
-//				arr1[0] = arr[i];
-//				arr1[1] = arr[j];
-//				return arr1;
-//				break;
-//			}
+//	int left = 0;
+//	int right = n - 1;
+//	while (left < right) {
+//		int sum = arr[left] + arr[right];
+//		if (sum == target) {
+//			arr1[0] = arr[left];
+//			arr1[1] = arr[right];
+//			return arr1;
+//		}
+//		else if (sum < target) {
+//			left++;
+//		}
+//		else {
+//			right--;
 //		}
 //	}
 //	free(arr1);
 //	return NULL;
 //}
-//双指针方法复杂度更低，适合大量数据
-int* find_add_arr(int* arr, int target) {
-	int* arr1 = (int*)malloc(sizeof(int) * 2);
-	if (arr1 == NULL) {
-		perror("arr1");
-		return NULL;
-	}
-	int left = 0;
-	int right = n - 1;
-	while (left < right) {
-		int sum = arr[left] + arr[right];
-		if (sum == target) {
-			arr1[0] = arr[left];
-			arr1[1] = arr[right];
-			return arr1;
-		}
-		else if (sum < target) {
-			left++;
-		}
-		else {
-			right--;
-		}
-	}
-	free(arr1);
-	return NULL;
-}
+//int main() {
+//	int* arr = (int*)malloc(sizeof(int)*n);
+//	if (arr == NULL) {
+//		perror("arr");
+//		return 1;
+//	}
+//	int* arr2 = (int*)malloc(sizeof(int)*2);
+//	if (arr2 == NULL) {
+//		perror("arr");
+//		return 1;
+//	}
+//	printf("请输入%d个数字\n", n);
+//	for (int i = 0; i < n; i++) {
+//		scanf("%d", &arr[i]);
+//	}
+//	qsort(arr, n, sizeof(int), compe_arr);
+//	show_arr(arr);
+//	int target = 0;
+//	printf("请输入一个目标数\n");
+//	scanf("%d", &target);
+//	arr2=find_add_arr(arr, target);
+//	for (int i = 0; i < 2; i++) {
+//		printf("%d ", arr2[i]);
+//	}
+//	free(arr);
+//	free(arr2);
+//	arr = NULL;
+//	arr2 = NULL;
+//	return 0;
+//}
+//#define size 20
+//int main() {
+//	int* arr = (int*)malloc(sizeof(int)*size);
+//	if (arr == NULL) {
+//		perror("arr");
+//		return 1;
+//	}
+//	for (int i = 0; i < size; i++) {
+//		arr[i] = i;
+//	}
+//	int a = 0;
+//	scanf("%d", &a);
+//	if (a < 10) {
+//		printf("%d",arr[a]);
+//			}
+//	return 0;
+//}
 int main() {
-	int* arr = (int*)malloc(sizeof(int)*n);
-	if (arr == NULL) {
-		perror("arr");
-		return 1;
-	}
-	int* arr2 = (int*)malloc(sizeof(int)*2);
-	if (arr2 == NULL) {
-		perror("arr");
-		return 1;
-	}
-	printf("请输入%d个数字\n", n);
-	for (int i = 0; i < n; i++) {
-		scanf("%d", &arr[i]);
-	}
-	qsort(arr, n, sizeof(int), compe_arr);
-	show_arr(arr);
-	int target = 0;
-	printf("请输入一个目标数\n");
-	scanf("%d", &target);
-	arr2=find_add_arr(arr, target);
-	for (int i = 0; i < 2; i++) {
-		printf("%d ", arr2[i]);
-	}
-	free(arr);
-	free(arr2);
-	arr = NULL;
-	arr2 = NULL;
+	int a = 0;
+	printf("请输入1到5之内的数字\n");
+	scanf("%d", &a);
+	for (int i = 1; i <= (pow(10,a)-1); i++) {
+			printf("%d ", i);
+		}
 	return 0;
 }
