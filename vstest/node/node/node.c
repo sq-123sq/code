@@ -1132,12 +1132,74 @@
 //			}
 //	return 0;
 //}
+//int main() {
+//	int a = 0;
+//	printf("请输入1到5之内的数字\n");
+//	scanf("%d", &a);
+//	for (int i = 1; i <= (pow(10,a)-1); i++) {
+//			printf("%d ", i);
+//		}
+//	return 0;
+//}
+//int find_fac(int a) {
+//	if (a == 1 || a == 2) {
+//		return 1;
+//	}
+//	else {
+//		return find_fac(a - 1) + find_fac(a - 2);
+//	}
+//}
+//int main() {
+//	int a = 0;
+//	printf("请输入一个正整数\n");
+//	scanf("%d", &a);
+//	int sum = find_fac(a);
+//	printf("%d\n", sum);
+//	return 0;
+//}
+typedef struct stack {
+	int data;
+	struct stack* next;
+}stack;
+stack* initsstack() {
+	stack* ps = (stack*)malloc(sizeof(stack));
+	if (ps == NULL) {
+		perror("initsstack");
+		return NULL;
+	}
+	ps->data = 0;
+	ps->next = NULL;
+}
+void addstack(stack* p) {
+	stack* ps = p;
+	stack* pt = initsstack();
+	printf("请输入一个正整数\n");
+	scanf("%d", &pt->data);
+	pt->next = ps->next;
+	ps->next = pt;
+	printf("入栈成功\n");
+}
+void delstack(stack* p) {
+	stack* ps = p->next;
+	p->next = ps->next;
+	free(ps);
+	printf("出栈成功\n");
+}
+void showstack(stack* p) {
+	stack* ps = p->next;
+	while (ps!=NULL)
+	{
+		printf("%d", ps->data);
+		ps = ps->next;
+	}
+}
 int main() {
-	int a = 0;
-	printf("请输入1到5之内的数字\n");
-	scanf("%d", &a);
-	for (int i = 1; i <= (pow(10,a)-1); i++) {
-			printf("%d ", i);
-		}
+	stack* p = initsstack();
+	for (int i = 0; i < 3; i++) {
+		addstack(p);
+	}
+	showstack(p);
+	delstack(p);
+	showstack(p);
 	return 0;
 }
