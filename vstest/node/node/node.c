@@ -1157,49 +1157,109 @@
 //	printf("%d\n", sum);
 //	return 0;
 //}
-typedef struct stack {
-	int data;
-	struct stack* next;
-}stack;
-stack* initsstack() {
-	stack* ps = (stack*)malloc(sizeof(stack));
-	if (ps == NULL) {
-		perror("initsstack");
-		return NULL;
+//typedef struct stack {
+//	int data;
+//	struct stack* next;
+//}stack;
+//stack* initsstack() {
+//	stack* ps = (stack*)malloc(sizeof(stack));
+//	if (ps == NULL) {
+//		perror("initsstack");
+//		return NULL;
+//	}
+//	ps->data = 0;
+//	ps->next = NULL;
+//}
+//void addstack(stack* p) {
+//	stack* ps = p;
+//	stack* pt = initsstack();
+//	printf("请输入一个正整数\n");
+//	scanf("%d", &pt->data);
+//	pt->next = ps->next;
+//	ps->next = pt;
+//	printf("入栈成功\n");
+//}
+//void delstack(stack* p) {
+//	stack* ps = p->next;
+//	p->next = ps->next;
+//	free(ps);
+//	printf("出栈成功\n");
+//}
+//void showstack(stack* p) {
+//	stack* ps = p->next;
+//	while (ps!=NULL)
+//	{
+//		printf("%d", ps->data);
+//		ps = ps->next;
+//	}
+//}
+//int main() {
+//	stack* p = initsstack();
+//	for (int i = 0; i < 3; i++) {
+//		addstack(p);
+//	}
+//	showstack(p);
+//	delstack(p);
+//	showstack(p);
+//	return 0;
+//}
+//int get_min(int* arr,int sz) {
+//	int min = arr[0];
+//	for (int i = 0; i < sz; i++) {
+//		if (arr[i] < min) {
+//			min=arr[i];
+//		}
+//	}
+//	return min;
+//}
+//void bubble_arr(int* arr, int sz) {
+//	for (int i = 0; i < sz - 1; i++) {
+//		for (int j = 0; j < sz - i - 1; j++) {
+//			if (arr[j] > arr[j + 1]) {
+//				int tmp = arr[j];
+//				arr[j] = arr[j + 1];
+//				arr[j + 1] = tmp;
+//			}
+//		}
+//	}
+//}
+//int main() {
+//	int arr[] = { 5,4,3,2,1 };
+//	int sz = sizeof(arr) / sizeof(arr[0]);
+//	bubble_arr(arr, sz);
+//	for (int i = 0; i < sz; i++) {
+//		printf("%d ", arr[i]);
+//	}
+//	printf("\n");
+//	for (int i = 0; i < 2; i++) {
+//		int tmp = arr[0];
+//		for (int j = 0; j < sz - 1; j++) {
+//			arr[j] = arr[j + 1];
+//         }
+//		arr[sz - 1] = tmp;
+//	}
+//	for (int i = 0; i < sz; i++) {
+//		printf("%d ", arr[i]);
+//	}
+//	printf("\n");
+//	int ret=get_min(arr,sz);
+//	printf("%d\n", ret);
+//	return 0;
+//}
+int find_a_1(int a) {
+	int ret = 0;
+	while (a) {
+		a=a&(a - 1);
+		/*if (a & 1) ret++;
+		a = a >> 1;*/
+		ret++;
 	}
-	ps->data = 0;
-	ps->next = NULL;
-}
-void addstack(stack* p) {
-	stack* ps = p;
-	stack* pt = initsstack();
-	printf("请输入一个正整数\n");
-	scanf("%d", &pt->data);
-	pt->next = ps->next;
-	ps->next = pt;
-	printf("入栈成功\n");
-}
-void delstack(stack* p) {
-	stack* ps = p->next;
-	p->next = ps->next;
-	free(ps);
-	printf("出栈成功\n");
-}
-void showstack(stack* p) {
-	stack* ps = p->next;
-	while (ps!=NULL)
-	{
-		printf("%d", ps->data);
-		ps = ps->next;
-	}
+	return ret;
 }
 int main() {
-	stack* p = initsstack();
-	for (int i = 0; i < 3; i++) {
-		addstack(p);
-	}
-	showstack(p);
-	delstack(p);
-	showstack(p);
+	int a = 0;
+	scanf("%d", &a);
+	int ret=find_a_1(a);
+	printf("%d", ret);
 	return 0;
 }
