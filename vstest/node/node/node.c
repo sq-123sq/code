@@ -1246,20 +1246,81 @@
 //	printf("%d\n", ret);
 //	return 0;
 //}
-int find_a_1(int a) {
-	int ret = 0;
-	while (a) {
-		a=a&(a - 1);
-		/*if (a & 1) ret++;
-		a = a >> 1;*/
-		ret++;
+//int find_a_1(int a) {
+//	int ret = 0;
+//	while (a) {
+//		a=a&(a - 1);
+//		/*if (a & 1) ret++;
+//		a = a >> 1;*/
+//		ret++;
+//	}
+//	return ret;
+//}
+//int main() {
+//	int a = 0;
+//	scanf("%d", &a);
+//	int ret=find_a_1(a);
+//	printf("%d", ret);
+//	return 0;
+//}
+typedef struct node {
+	int data;
+	struct node* next;
+}node;
+node* initsnode1() {
+	node* ps = (node*)malloc(sizeof(node));
+	if (ps == NULL) {
+		perror("initsnode1");
+		return NULL;
 	}
-	return ret;
+	ps->data = 0;
+	ps->next = NULL;
+}
+node* addnode1(node* p,int data) {
+	node* pt = initsnode1();
+	pt->data = data;
+	pt->next = NULL;
+	p->next = pt;
+	return pt;
+}
+node* gettailnode1(node* p) {
+	node* ps = p;
+	while (ps->next != NULL) {
+		ps = ps->next;
+	}
+	return ps;
+}
+void find_node1(node* p, int data) {
+	node* pps = p;
+	node* ps = p->next;
+	while (ps != NULL) {
+		if (ps->data == data) {
+			pps->next = ps->next;
+			free(ps);
+			ps = pps->next;
+		}
+		else {
+			pps = ps;
+			ps = ps->next;
+		}
+	}
+}
+void shownode1(node* p) {
+	node* ps = p->next;
+	while (ps != NULL) {
+		printf("%d ", ps->data);
+		ps = ps->next;
+	}
+	printf("\n");
 }
 int main() {
-	int a = 0;
-	scanf("%d", &a);
-	int ret=find_a_1(a);
-	printf("%d", ret);
+	node* p = initsnode1();
+	node* tail = gettailnode1(p);
+	tail=addnode1(tail, 10);
+	tail=addnode1(tail, 30);
+	tail=addnode1(tail, 60);
+	shownode1(p);
+	find_node1(p, 30);
+	shownode1(p);
 	return 0;
 }
