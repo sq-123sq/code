@@ -1263,11 +1263,12 @@
 //	printf("%d", ret);
 //	return 0;
 //}
+#define k 2
 typedef struct node {
 	int data;
 	struct node* next;
 }node;
-node* initsnode1() {
+node* initsnode1() {//初始化头结点
 	node* ps = (node*)malloc(sizeof(node));
 	if (ps == NULL) {
 		perror("initsnode1");
@@ -1275,13 +1276,7 @@ node* initsnode1() {
 	}
 	ps->data = 0;
 	ps->next = NULL;
-}
-node* addnode1(node* p,int data) {
-	node* pt = initsnode1();
-	pt->data = data;
-	pt->next = NULL;
-	p->next = pt;
-	return pt;
+	return ps;
 }
 node* gettailnode1(node* p) {
 	node* ps = p;
@@ -1289,6 +1284,18 @@ node* gettailnode1(node* p) {
 		ps = ps->next;
 	}
 	return ps;
+}
+void addnode1(node* p,int data) {
+	node* tail = gettailnode1(p);
+	node* pt = (node*)malloc(sizeof(node));
+	if (pt == NULL) {
+		perror("initsnode1");
+		return NULL;
+	}
+	pt->data = data;
+	pt->next = NULL;
+	tail->next = pt;
+	tail = pt;
 }
 void find_node1(node* p, int data) {
 	node* pps = p;
@@ -1306,21 +1313,139 @@ void find_node1(node* p, int data) {
 	}
 }
 void shownode1(node* p) {
+	if (p->data == 0) {//打印带头结点的链表
+		node* ps = p->next;
+		while (ps != NULL) {
+			printf("%d ", ps->data);
+			ps = ps->next;
+		}
+		printf("\n");
+	}
+	else {//打印不带头结点的链表
+		node* pt = p;
+		while (pt != NULL) {
+			printf("%d ", pt->data);
+			pt = pt->next;
+		}
+		printf("\n");
+	}
+}
+int lennode(node* p) {
+	int len = 0;
 	node* ps = p->next;
 	while (ps != NULL) {
-		printf("%d ", ps->data);
+		len++;
 		ps = ps->next;
 	}
-	printf("\n");
+	return len;
+}
+//int main() {
+//	node* p = initsnode1();
+//	addnode1(p, 10);
+//	addnode1(p, 30);
+//	addnode1(p, 60);
+//	shownode1(p);
+//	find_node1(p, 30);
+//	shownode1(p);
+//	return 0;
+//}
+node* find_del_node1(node* p, int s) {
+	node* ps = p;
+	for (int i = 0; i < s ; i++) {
+		ps = ps->next;
+		if (ps == NULL) return NULL;
+	}
+	node* pt = initsnode1();
+	pt->data = ps->data;
+	pt->next = ps;
+	return pt;
+}
+//int main() {
+//	node* p = initsnode1();
+//	addnode1(p, 10);
+//	addnode1(p, 30);
+//	addnode1(p, 60);
+//	shownode1(p);
+//	int len = lennode(p);
+//	node* pt = find_del_node1(p, len - k+1);
+//	shownode1(pt);
+//	return 0;
+//}
+//反转链表
+node* transform_node1(node* p) {
+	if (p->next == NULL) return NULL;
+	node* first = NULL;
+	node* second = p->next;
+	node* third;
+	while (second!=NULL)
+	{
+		third = second->next;
+		second->next = first;
+		first = second;
+		second = third;
+	}
+	node* pt = initsnode1();
+	pt->next = first;
+	return pt;
+}
+//int main() {
+//	node* p = initsnode1();
+//	addnode1(p, 10);
+//	addnode1(p, 30);
+//	addnode1(p, 60);
+//	shownode1(p);
+//	node* pt = transform_node1(p);
+//	shownode1(pt);
+//	return 0;
+//}
+node* getall_node1(node* p, node* pt) {
+	node* tail = gettailnode1(p);
+	tail->next = pt->next;
+	node* ps;
+	node* qt;
+	for (ps = p; ps != NULL; ps = ps->next) {
+		for (qt = ps->next; qt != NULL; qt = qt->next) {
+			if (ps->data > qt->data) {
+				int tmp = ps->data;
+				ps->data = qt->data;
+				qt->data = tmp;
+			}
+		}
+	}
+	return p;
+}
+node* getall_node1_2(node* s1, node* s2){
+	if (s1 != NULL) s1 = s1->next;
+	if (s2 != NULL) s2 = s2->next;
+	node dummy;
+	dummy.next = NULL;
+	node* tail = &dummy;
+	while (s1!=NULL&& s2!=NULL)
+	{
+		if (s1->data > s2->data) {
+			tail->next = s2;
+			s2 = s2->next;
+		}else{
+			tail->next = s1;
+			s1 = s1->next;
+		}
+		tail = tail->next;
+	}
+	tail->next = s1 ? s1 : s2;
+	return dummy.next;
 }
 int main() {
 	node* p = initsnode1();
-	node* tail = gettailnode1(p);
-	tail=addnode1(tail, 10);
-	tail=addnode1(tail, 30);
-	tail=addnode1(tail, 60);
-	shownode1(p);
-	find_node1(p, 30);
-	shownode1(p);
+	node* pt = initsnode1();
+	addnode1(p, 1);
+	addnode1(p, 3);
+	addnode1(p, 5);
+	addnode1(pt, 2);
+	addnode1(pt, 4);
+	addnode1(pt, 6);
+	node* pps = getall_node1(p, pt);
+	//node* pps1 = getall_node1_2(p, pt);
+	shownode1(pps);
+	//shownode1(pps1);
 	return 0;
 }
