@@ -1263,189 +1263,304 @@
 //	printf("%d", ret);
 //	return 0;
 //}
-#define k 2
-typedef struct node {
-	int data;
-	struct node* next;
-}node;
-node* initsnode1() {//初始化头结点
-	node* ps = (node*)malloc(sizeof(node));
-	if (ps == NULL) {
-		perror("initsnode1");
-		return NULL;
-	}
-	ps->data = 0;
-	ps->next = NULL;
-	return ps;
-}
-node* gettailnode1(node* p) {
-	node* ps = p;
-	while (ps->next != NULL) {
-		ps = ps->next;
-	}
-	return ps;
-}
-void addnode1(node* p,int data) {
-	node* tail = gettailnode1(p);
-	node* pt = (node*)malloc(sizeof(node));
-	if (pt == NULL) {
-		perror("initsnode1");
-		return NULL;
-	}
-	pt->data = data;
-	pt->next = NULL;
-	tail->next = pt;
-	tail = pt;
-}
-void find_node1(node* p, int data) {
-	node* pps = p;
-	node* ps = p->next;
-	while (ps != NULL) {
-		if (ps->data == data) {
-			pps->next = ps->next;
-			free(ps);
-			ps = pps->next;
-		}
-		else {
-			pps = ps;
-			ps = ps->next;
-		}
-	}
-}
-void shownode1(node* p) {
-	if (p->data == 0) {//打印带头结点的链表
-		node* ps = p->next;
-		while (ps != NULL) {
-			printf("%d ", ps->data);
-			ps = ps->next;
-		}
-		printf("\n");
-	}
-	else {//打印不带头结点的链表
-		node* pt = p;
-		while (pt != NULL) {
-			printf("%d ", pt->data);
-			pt = pt->next;
-		}
-		printf("\n");
-	}
-}
-int lennode(node* p) {
-	int len = 0;
-	node* ps = p->next;
-	while (ps != NULL) {
-		len++;
-		ps = ps->next;
-	}
-	return len;
-}
+//#define k 2
+//#define nodedata -999
+//typedef struct node {
+//	int data;
+//	struct node* next;
+//}node;
+//node* initsnode1() {//初始化头结点
+//	node* ps = (node*)malloc(sizeof(node));
+//	if (ps == NULL) {
+//		perror("initsnode1");
+//		return NULL;
+//	}
+//	ps->data = nodedata;
+//	ps->next = NULL;
+//	return ps;
+//}
+//node* gettailnode1(node* p) {
+//	node* ps = p;
+//	while (ps->next != NULL) {
+//		ps = ps->next;
+//	}
+//	return ps;
+//}
+//void addnode1(node* p,int data) {
+//	node* tail = gettailnode1(p);
+//	node* pt = (node*)malloc(sizeof(node));
+//	if (pt == NULL) {
+//		perror("initsnode1");
+//		return NULL;
+//	}
+//	pt->data = data;
+//	pt->next = NULL;
+//	tail->next = pt;
+//	tail = pt;
+//}
+//void find_node1(node* p, int data) {
+//	node* pps = p;
+//	node* ps = p->next;
+//	while (ps != NULL) {
+//		if (ps->data == data) {
+//			pps->next = ps->next;
+//			free(ps);
+//			ps = pps->next;
+//		}
+//		else {
+//			pps = ps;
+//			ps = ps->next;
+//		}
+//	}
+//}
+//void shownode1(node* p) {
+//	if (p->data == nodedata) {//打印带头结点的链表
+//		node* ps = p->next;
+//		while (ps != NULL) {
+//			printf("%d ", ps->data);
+//			ps = ps->next;
+//		}
+//		printf("\n");
+//	}
+//	else {//打印不带头结点的链表
+//		node* pt = p;
+//		while (pt != NULL) {
+//			printf("%d ", pt->data);
+//			pt = pt->next;
+//		}
+//		printf("\n");
+//	}
+//}
+//int lennode(node* p) {
+//	int len = 0;
+//	node* ps = p->next;
+//	while (ps != NULL) {
+//		len++;
+//		ps = ps->next;
+//	}
+//	return len;
+//}
+////int main() {
+////	node* p = initsnode1();
+////	addnode1(p, 10);
+////	addnode1(p, 30);
+////	addnode1(p, 60);
+////	shownode1(p);
+////	find_node1(p, 30);
+////	shownode1(p);
+////	return 0;
+////}
+//node* find_del_node1(node* p, int s) {
+//	node* ps = p;
+//	for (int i = 0; i < s ; i++) {
+//		ps = ps->next;
+//		if (ps == NULL) return NULL;
+//	}
+//	node* pt = initsnode1();
+//	pt->data = ps->data;
+//	pt->next = ps;
+//	return pt;
+//}
+////int main() {
+////	node* p = initsnode1();
+////	addnode1(p, 10);
+////	addnode1(p, 30);
+////	addnode1(p, 60);
+////	shownode1(p);
+////	int len = lennode(p);
+////	node* pt = find_del_node1(p, len - k+1);
+////	shownode1(pt);
+////	return 0;
+////}
+////反转链表
+//node* transform_node1(node* p) {
+//	if (p->next == NULL) return NULL;
+//	node* first = NULL;
+//	node* second = p->next;
+//	node* third;
+//	while (second!=NULL)
+//	{
+//		third = second->next;
+//		second->next = first;
+//		first = second;
+//		second = third;
+//	}
+//	node* pt = initsnode1();
+//	pt->next = first;
+//	return pt;
+//}
+////int main() {
+////	node* p = initsnode1();
+////	addnode1(p, 10);
+////	addnode1(p, 30);
+////	addnode1(p, 60);
+////	shownode1(p);
+////	node* pt = transform_node1(p);
+////	shownode1(pt);
+////	return 0;
+////}
+//node* getall_node1(node* p, node* pt) {
+//	node* tail = gettailnode1(p);
+//	tail->next = pt->next;
+//	node* ps;
+//	node* qt;
+//	for (ps = p; ps != NULL; ps = ps->next) {
+//		for (qt = ps->next; qt != NULL; qt = qt->next) {
+//			if (ps->data > qt->data) {
+//				int tmp = ps->data;
+//				ps->data = qt->data;
+//				qt->data = tmp;
+//			}
+//		}
+//	}
+//	return p;
+//}
+//node* getall_node1_2(node* s1, node* s2){
+//	if (s1 != NULL) s1 = s1->next;
+//	if (s2 != NULL) s2 = s2->next;
+//	node dummy;
+//	dummy.next = NULL;
+//	node* tail = &dummy;
+//	while (s1!=NULL&& s2!=NULL)
+//	{
+//		if (s1->data > s2->data) {
+//			tail->next = s2;
+//			s2 = s2->next;
+//		}else{
+//			tail->next = s1;
+//			s1 = s1->next;
+//		}
+//		tail = tail->next;
+//	}
+//	tail->next = s1 ? s1 : s2;
+//	return dummy.next;
+//}
 //int main() {
 //	node* p = initsnode1();
-//	addnode1(p, 10);
-//	addnode1(p, 30);
-//	addnode1(p, 60);
-//	shownode1(p);
-//	find_node1(p, 30);
-//	shownode1(p);
+//	node* pt = initsnode1();
+//	addnode1(p, 1);
+//	addnode1(p, 3);
+//	addnode1(p, 5);
+//	addnode1(pt, 2);
+//	addnode1(pt, 4);
+//	addnode1(pt, 6);
+//	node* pps = getall_node1(p, pt);
+//	//node* pps1 = getall_node1_2(p, pt);
+//	shownode1(pps);
+//	//shownode1(pps1);
 //	return 0;
 //}
-node* find_del_node1(node* p, int s) {
-	node* ps = p;
-	for (int i = 0; i < s ; i++) {
-		ps = ps->next;
-		if (ps == NULL) return NULL;
-	}
-	node* pt = initsnode1();
-	pt->data = ps->data;
-	pt->next = ps;
-	return pt;
-}
+//typedef struct nodetree1 {
+//	int data;
+//	struct nodetree1* lchild;
+//	struct nodetree1* rchild;
+//}nodetree1;
+//typedef nodetree1* nodetree;
+//nodetree create_tree(int data) {
+//	nodetree ps = (nodetree)malloc(sizeof(nodetree1));
+//	if (ps == NULL) {
+//		perror("create_tree");
+//		return NULL;
+//	}
+//	ps->data = data;
+//	ps->lchild = NULL;
+//	ps->rchild = NULL;
+//	return ps;
+//}
+//int addnodetree1(nodetree* root, int data) {
+//	if (*root == NULL) {
+//		*root = create_tree(data);
+//		return;
+//	}
+//	if (data > (*root)->data) {
+//		addnodetree1(&(*root)->rchild, data);
+//	}
+//	if (data < (*root)->data) {
+//		addnodetree1(&(*root)->lchild, data);
+//	}
+//}
+//void beforeprintnodetree1(nodetree root) {
+//	if (root == NULL) {
+//		return;
+//	}
+//	printf("%d", root->data);
+//	beforeprintnodetree1(root->lchild);
+//	beforeprintnodetree1(root->rchild);
+//}
+//void mirrnodetree1(nodetree root) {
+//	if (root == NULL) {
+//		return;
+//	}
+//	nodetree tmp = root->lchild;
+//	root->lchild = root->rchild;
+//	root->rchild = tmp;
+//	mirrnodetree1(root->lchild);
+//	mirrnodetree1(root->rchild);
+//}
+//int is_mirr(nodetree a, nodetree b) {
+//	if (a == NULL && b == NULL) {
+//		return 1;
+//	}
+//	if (a == NULL || b == NULL) {
+//		return 0;
+//	}
+//	return (a->data == b->data) && is_mirr(a->lchild, b->rchild) && is_mirr(a->rchild, b->lchild);
+//}
+//int is_mirrnodetree1(nodetree root) {
+//	if (root == NULL) {
+//		return 1;
+//	}
+//	return is_mirr(root->lchild, root->rchild);
+//}
 //int main() {
-//	node* p = initsnode1();
-//	addnode1(p, 10);
-//	addnode1(p, 30);
-//	addnode1(p, 60);
-//	shownode1(p);
-//	int len = lennode(p);
-//	node* pt = find_del_node1(p, len - k+1);
-//	shownode1(pt);
+//	//nodetree root =NULL;
+//	//addnodetree1(&root, 8);
+//	//addnodetree1(&root, 6);
+//	//addnodetree1(&root, 10);
+//	//addnodetree1(&root, 5);
+//	//addnodetree1(&root, 7);
+//	//addnodetree1(&root, 9);
+//	//addnodetree1(&root, 11);
+//	nodetree root = create_tree(8);
+//	root->lchild = create_tree(6);
+//	root->rchild = create_tree(10);
+//	root->lchild->lchild = create_tree(5);
+//	root->lchild->rchild = create_tree(7);
+//	root->rchild->lchild = create_tree(9);
+//	root->rchild->rchild = create_tree(11);
+//	beforeprintnodetree1(root);
+//	printf("\n");
+//	mirrnodetree1(root);
+//	beforeprintnodetree1(root);
+//	printf("\n");
+//	int a = is_mirrnodetree1(root);
+//	if (a == 1) {
+//		printf("是对称树\n");
+//	}
+//	else if (a == 0) {
+//		printf("不是对称树\n");
+//		}
 //	return 0;
 //}
-//反转链表
-node* transform_node1(node* p) {
-	if (p->next == NULL) return NULL;
-	node* first = NULL;
-	node* second = p->next;
-	node* third;
-	while (second!=NULL)
-	{
-		third = second->next;
-		second->next = first;
-		first = second;
-		second = third;
-	}
-	node* pt = initsnode1();
-	pt->next = first;
-	return pt;
-}
-//int main() {
-//	node* p = initsnode1();
-//	addnode1(p, 10);
-//	addnode1(p, 30);
-//	addnode1(p, 60);
-//	shownode1(p);
-//	node* pt = transform_node1(p);
-//	shownode1(pt);
-//	return 0;
-//}
-node* getall_node1(node* p, node* pt) {
-	node* tail = gettailnode1(p);
-	tail->next = pt->next;
-	node* ps;
-	node* qt;
-	for (ps = p; ps != NULL; ps = ps->next) {
-		for (qt = ps->next; qt != NULL; qt = qt->next) {
-			if (ps->data > qt->data) {
-				int tmp = ps->data;
-				ps->data = qt->data;
-				qt->data = tmp;
-			}
-		}
-	}
-	return p;
-}
-node* getall_node1_2(node* s1, node* s2){
-	if (s1 != NULL) s1 = s1->next;
-	if (s2 != NULL) s2 = s2->next;
-	node dummy;
-	dummy.next = NULL;
-	node* tail = &dummy;
-	while (s1!=NULL&& s2!=NULL)
-	{
-		if (s1->data > s2->data) {
-			tail->next = s2;
-			s2 = s2->next;
-		}else{
-			tail->next = s1;
-			s1 = s1->next;
-		}
-		tail = tail->next;
-	}
-	tail->next = s1 ? s1 : s2;
-	return dummy.next;
-}
 int main() {
-	node* p = initsnode1();
-	node* pt = initsnode1();
-	addnode1(p, 1);
-	addnode1(p, 3);
-	addnode1(p, 5);
-	addnode1(pt, 2);
-	addnode1(pt, 4);
-	addnode1(pt, 6);
-	node* pps = getall_node1(p, pt);
-	//node* pps1 = getall_node1_2(p, pt);
-	shownode1(pps);
-	//shownode1(pps1);
+	int a = 0;
+	scanf("%d", &a);
+	int* arr = (int*)malloc(sizeof(int)*a*a);
+	int* arr1 = (int*)malloc(sizeof(int)*a*a);
+	for (int i = 0; i < a; i++) {
+		for (int j = 0; j < a; j++) {
+			scanf("%d",&arr[i*a+j]);
+		}
+		printf("\n");
+	}
+	//for (int i = 0; i < a; i++) {
+	//	for (int j = 0; j < a; j++) {
+	//		if (arr[j] > arr[j + 1]) {
+	//			int tmp = arr[j];
+	//			arr[j] = arr[j + 1];
+	//			arr[j + 1] = tmp;
+	//		}
+	//	}
+	//}
 	return 0;
 }
