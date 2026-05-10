@@ -5,6 +5,7 @@ void menu(){
     printf("*********************\n");
 }
 void game(){
+    char ret=0;
     //游戏函数
     char board[ROW][COL] = {0};
     //初始化棋盘
@@ -16,23 +17,31 @@ void game(){
     {
         //玩家下棋
         player_move(board);
-        print_board(board);
         //判断玩家是否胜利
-        if (is_win(board) == 'X')
-        {
-            printf("玩家胜利\n");
+        ret=is_win(board);
+        if(ret!='C'){
             break;
         }
+        print_board(board);
         //电脑下棋
         computer_move(board);
-        print_board(board);
         //判断电脑是否胜利
-        if (is_win(board) == 'O')
-        {
-            printf("电脑胜利\n");
+        ret=is_win(board);
+        if(ret!='C'){
             break;
         }
+        print_board(board);
     }
+    if(ret=='X'){
+        printf("玩家胜利\n");
+    }
+    else if(ret=='O'){
+        printf("电脑胜利\n");
+    }
+    else{
+        printf("平局\n");
+    }
+    print_board(board);
 }
 int main(){
     srand((unsigned int)time(NULL));

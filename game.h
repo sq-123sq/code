@@ -8,4 +8,4 @@ void init_board(char board[ROW][COL]);
 void print_board(char board[ROW][COL]);
 void player_move(char board[ROW][COL]);
 void computer_move(char board[ROW][COL]);
-void is_win(char board[ROW][COL], int *pwin, int *cwin);
+char is_win(char board[ROW][COL]);
