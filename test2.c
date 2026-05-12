@@ -17,27 +17,27 @@ void game(){
     //排查
     findmine(mine,show);
 }
-int main(){
-    int input;
-    srand((unsigned int)time(NULL));
-    do
-    {
-        menu();
-        printf("请输入菜单编号: ");
-        scanf("%d", &input);
-        switch (input)
-        {
-        case 1:
-            printf("扫雷\n");
-            game(); //game()函数在game2.h中声明，game2.c中定义
-            break;
-        case 0:
-            printf("退出游戏\n");
-            break;
-        default:
-            printf("输入错误，请重新输入\n");
-            break;
-        }
-    } while (input);
-    return 0;
-}
+// int main(){
+//     int input;
+//     srand((unsigned int)time(NULL));
+//     do
+//     {
+//         menu();
+//         printf("请输入菜单编号: ");
+//         scanf("%d", &input);
+//         switch (input)
+//         {
+//         case 1:
+//             printf("扫雷\n");
+//             game(); //game()函数在game2.h中声明，game2.c中定义
+//             break;
+//         case 0:
+//             printf("退出游戏\n");
+//             break;
+//         default:
+//             printf("输入错误，请重新输入\n");
+//             break;
+//         }
+//     } while (input);
+//     return 0;
+// }
