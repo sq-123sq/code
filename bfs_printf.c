@@ -164,21 +164,164 @@ void leve_order(treenode* root){
 
 
 
-int main()
-{
-    int* str=(int*)malloc(sizeof(int)*30);
-    if(str==NULL)
+// int main()
+// {
+//     int* str=(int*)malloc(sizeof(int)*30);
+//     if(str==NULL)
+//     {
+//         perror("malloc error");
+//         return -1;
+//     }
+//     for(int i=0;i<6;i++){
+//         scanf("%d",&str[i]);
+//     }
+//     for(int i=0;i<6;i++){
+//         printf("%d ",str[i]);
+//     }
+//     free(str);
+//     str=NULL;
+//     return 0;
+// }
+
+
+// #define n 16
+// #define row 4
+// #define col 3
+// int main(){
+//     int* str=(int*)malloc(sizeof(char)*100);
+//     if (str==NULL)
+//     {
+//         perror("malloc error");
+//         return -1;
+//     }
+//     for(int i=0;i<n;i++){
+//         scanf("%d",&str[i]);
+//     }
+//     for(int i=0;i<n-1;i++){
+//         for(int j=0;j<n-1-i;j++){
+//             if(str[j]>str[j+1]){
+//                 int temp=str[j];
+//                 str[j]=str[j+1];
+//                 str[j+1]=temp;
+//             }
+//         }
+//     }
+//     for(int i=0;i<row;i++){
+//         for(int j=0;j<col;j++){
+//             printf("%d ",str[i*col+j]);
+//         }
+//         printf("\n");
+//     }
+//     free(str);
+//     str=NULL;
+//     return 0;
+// }
+
+
+// int cal(int* str,int a){
+//     int sum=0;
+//     for(int i=0;i<a;i++){
+//         sum+=str[i];
+//     }
+//     return sum;
+// }
+// int main(){
+//     int a=0;
+//     scanf("%d",&a);
+//     int* str=(int*)malloc(sizeof(int)*a);
+//     if (str==NULL)
+//     {
+//         perror("malloc error");
+//         return -1;
+//     }
+//     for(int i=0;i<a;i++){
+//         scanf("%d",&str[i]);
+//     }
+//     int sum=cal(str,a);
+//     printf("%d",sum);
+//     free(str);
+//     str=NULL;
+//     return 0;
+// }
+
+// void sort(int* str,int a){
+//     for(int i=0;i<a-1;i++){
+//         for(int j=0;j<a-1-i;j++){
+//             if(str[j]>str[j+1]){
+//                 int temp=str[j];
+//                 str[j]=str[j+1];
+//                 str[j+1]=temp;
+//             }
+//         }
+//     }
+// }
+// int main(){
+//     int a=0;
+//     scanf("%d",&a);
+//     int* str=(int*)malloc(sizeof(int)*a);
+//     if (str==NULL)
+//     {
+//         perror("malloc error");
+//         return -1;
+//     }
+//     for(int i=0;i<a;i++){
+//         scanf("%d",&str[i]);
+//     }
+//     sort(str,a);
+//     for(int i=0;i<a;i++){
+//         printf("%d ",str[i]);
+//     }
+//     return 0;
+// }
+
+
+typedef struct node{
+    int data;
+    struct node* next;
+}node;
+node* creatnode_niu(){
+    node* newnode=(node*)malloc(sizeof(node));
+    if(newnode==NULL){
+        perror("malloc error");
+        return NULL;
+    }
+    newnode->data=0;
+    newnode->next=NULL;
+    return newnode;
+}
+void insert_niu(node* head,int data){
+    node* ps=head;
+    while(ps->next!=NULL){
+        ps=ps->next;
+    }
+    node* tail=ps;
+    node* newnode=creatnode_niu();
+    newnode->data=data;
+    tail->next=newnode;
+}
+void print_niu(node* head){
+    node* ps=head->next;
+    while(ps!=NULL){
+        printf("%d ",ps->data);
+        ps=ps->next;
+    }
+}
+int main(){
+    int a=0;
+    scanf("%d",&a);
+    node* head=creatnode_niu();
+    int *str=(int*)malloc(sizeof(int)*a);
+    if (str==NULL)
     {
         perror("malloc error");
         return -1;
     }
-    for(int i=0;i<6;i++){
+    for(int i=0;i<a;i++){
         scanf("%d",&str[i]);
     }
-    for(int i=0;i<6;i++){
-        printf("%d ",str[i]);
+    for(int i=0;i<a;i++){
+        insert_niu(head,str[i]);
     }
-    free(str);
-    str=NULL;
+    print_niu(head);
     return 0;
 }
