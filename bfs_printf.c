@@ -275,6 +275,59 @@ void leve_order(treenode* root){
 // }
 
 
+// typedef struct node{
+//     int data;
+//     struct node* next;
+// }node;
+// node* creatnode_niu(){
+//     node* newnode=(node*)malloc(sizeof(node));
+//     if(newnode==NULL){
+//         perror("malloc error");
+//         return NULL;
+//     }
+//     newnode->data=0;
+//     newnode->next=NULL;
+//     return newnode;
+// }
+// void insert_niu(node* head,int data){
+//     node* ps=head;
+//     while(ps->next!=NULL){
+//         ps=ps->next;
+//     }
+//     node* tail=ps;
+//     node* newnode=creatnode_niu();
+//     newnode->data=data;
+//     tail->next=newnode;
+// }
+// void print_niu(node* head){
+//     node* ps=head->next;
+//     while(ps!=NULL){
+//         printf("%d ",ps->data);
+//         ps=ps->next;
+//     }
+// }
+// int main(){
+//     int a=0;
+//     scanf("%d",&a);
+//     node* head=creatnode_niu();
+//     int *str=(int*)malloc(sizeof(int)*a);
+//     if (str==NULL)
+//     {
+//         perror("malloc error");
+//         return -1;
+//     }
+//     for(int i=0;i<a;i++){
+//         scanf("%d",&str[i]);
+//     }
+//     for(int i=0;i<a;i++){
+//         insert_niu(head,str[i]);
+//     }
+//     print_niu(head);
+//     return 0;
+// }
+
+
+
 typedef struct node{
     int data;
     struct node* next;
@@ -306,11 +359,45 @@ void print_niu(node* head){
         ps=ps->next;
     }
 }
+int length_niu(node* head){
+    node* ps=head->next;
+    int count=0;
+    while(ps!=NULL)
+    {
+        count++;
+        ps=ps->next;
+    }
+    return count;
+}
+void swap(node* a,node* b)
+{
+    if(a==NULL||b==NULL){
+        return;
+    }
+    int temp=a->data;
+    a->data=b->data;
+    b->data=temp;
+}
+void change_niu(node* head)
+{
+    node* ps=head->next;
+    node* pre_tail=head->next;
+    int length=length_niu(head);
+    if(length>=2){//链表长度大于等于2，交换前两个节点
+        swap(ps,ps->next);
+    }
+    if(length>=2){//链表长度大于等于2，交换最后一个节点和倒数第二个节点
+        while(pre_tail->next->next!=NULL){
+            pre_tail=pre_tail->next;
+    }
+    swap(pre_tail,pre_tail->next);
+    }
+}
 int main(){
     int a=0;
     scanf("%d",&a);
     node* head=creatnode_niu();
-    int *str=(int*)malloc(sizeof(int)*a);
+    int* str=(int*)malloc(sizeof(int)*a);
     if (str==NULL)
     {
         perror("malloc error");
@@ -322,6 +409,9 @@ int main(){
     for(int i=0;i<a;i++){
         insert_niu(head,str[i]);
     }
+    change_niu(head);
     print_niu(head);
+    free(str);
+    str=NULL;
     return 0;
 }
