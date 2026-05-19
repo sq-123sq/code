@@ -393,25 +393,167 @@ void change_niu(node* head)
     swap(pre_tail,pre_tail->next);
     }
 }
-int main(){
-    int a=0;
-    scanf("%d",&a);
-    node* head=creatnode_niu();
-    int* str=(int*)malloc(sizeof(int)*a);
-    if (str==NULL)
-    {
-        perror("malloc error");
-        return -1;
+void sum_niu(node* head){
+    node* ps=head->next;
+    int sum=0;
+    while(ps!=NULL){
+        sum+=ps->data;
+        ps=ps->next;
     }
-    for(int i=0;i<a;i++){
-        scanf("%d",&str[i]);
-    }
-    for(int i=0;i<a;i++){
-        insert_niu(head,str[i]);
-    }
-    change_niu(head);
-    print_niu(head);
-    free(str);
-    str=NULL;
-    return 0;
+    printf("%d\n",sum);
 }
+// int main(){
+//     int a=0;
+//     scanf("%d",&a);
+//     node* head=creatnode_niu();
+//     int* str=(int*)malloc(sizeof(int)*a);
+//     if (str==NULL)
+//     {
+//         perror("malloc error");
+//         return -1;
+//     }
+//     for(int i=0;i<a;i++){
+//         scanf("%d",&str[i]);
+//     }
+//     for(int i=0;i<a;i++){
+//         insert_niu(head,str[i]);
+//     }
+//     change_niu(head);
+//     print_niu(head);
+//     free(str);
+//     str=NULL;
+//     return 0;
+// }
+
+
+
+// int main(){
+//     int a=0;
+//     scanf("%d",&a);
+//     node* head=creatnode_niu();
+//     int *str=(int*)malloc(sizeof(int)*a);
+//     if (str==NULL)
+//     {
+//         perror("malloc error");
+//         return -1;
+//     }
+//     for(int i=0;i<a;i++){
+//         scanf("%d",&str[i]);
+//     }
+//     for(int i=0;i<a;i++){
+//         insert_niu(head,str[i]);
+//     }
+//     sum_niu(head);
+//     free(str);
+//     str=NULL;
+//     return 0;
+// }
+
+void stdin_niu(int* arr,int a)
+{
+    for(int i=0;i<a;i++){
+        scanf("%d",&arr[i]);
+    }
+}
+void arr_to_node_niu(node* head,int* arr,int a)
+{
+    for(int i=0;i<a;i++){
+        insert_niu(head,arr[i]);
+    }
+}
+node* node_to_node_niu(node* head1,node* head2)
+{
+    node* ps1=head1->next;
+    node* ps2=head2->next;
+    node* newnode=creatnode_niu();
+    while(ps1!=NULL&&ps2!=NULL){
+        insert_niu(newnode,ps1->data+ps2->data);
+        ps1=ps1->next;
+        ps2=ps2->next;
+    }
+    return newnode;
+}
+// int main(){
+//     int n;
+//     scanf("%d",&n);
+//     node* head1=creatnode_niu();
+//     node* head2=creatnode_niu();
+//     int* str1=(int*)malloc(sizeof(int)*n);
+//     int* str2=(int*)malloc(sizeof(int)*n);
+//     if (str1==NULL||str2==NULL)
+//     {
+//         perror("malloc error");
+//         return -1;
+//     }
+//     stdin_niu(str1,n);
+//     stdin_niu(str2,n);
+//     arr_to_node_niu(head1,str1,n);
+//     arr_to_node_niu(head2,str2,n);
+//     node* head=node_to_node_niu(head1,head2);
+//     print_niu(head);
+//     return 0;
+// }
+
+
+void delate_node_niu(node* head,int x)
+{
+    node* ps=head->next;
+    node* pre=head;
+    while(ps!=NULL){
+        if(ps->data==x){
+            pre->next=ps->next;
+            free(ps);
+            ps=pre->next;
+        }
+        else{
+            pre=ps;
+            ps=ps->next;
+        }
+    }
+}
+// int main(){
+//     int n,x;
+//     scanf("%d %d",&n,&x);
+//     node* head=creatnode_niu();
+//     int* arr=(int*)malloc(sizeof(int)*n);
+//     if (arr==NULL)
+//     {
+//         perror("malloc error");
+//         return -1;
+//     }
+//     stdin_niu(arr,n);
+//     for(int i=0;i<n;i++){
+//         insert_niu(head,arr[i]);
+//     }
+//     delate_node_niu(head,x);
+//     print_niu(head);
+// }
+
+void add_node_niu(node* head,int i)
+{
+    node* pre=head;
+    if(pre==NULL)
+    return;
+    for(int j=0;j<i;j++){
+        pre=pre->next;
+    }
+    node* newnode=creatnode_niu();
+    newnode->data=i;
+    newnode->next=pre->next;
+    pre->next=newnode;
+}
+// int main(){
+//     int n,i;
+//     scanf("%d %d",&n,&i);
+//     node* head=creatnode_niu();
+//     int *arr=(int*)malloc(sizeof(int)*n);
+//     if (arr==NULL)
+//     {
+//         perror("malloc error");
+//         return -1;
+//     }
+//     stdin_niu(arr,n);
+//     arr_to_node_niu(head,arr,n);
+//     add_node_niu(head,i);
+//     print_niu(head);
+// }
