@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <time.h>
 
 typedef struct TData{
     int year;
@@ -113,16 +114,19 @@ int cmp_double(const void* a, const void* b)
     if (isnan(db)) {
         return -1;
     }
+    if(da>db) return 1;
+    if(da<db) return -1;
+    return 0;
 
     // 处理正常数值比较
-    if (da > db) {
-        return 1;
-    } else if (da < db) {
-        return -1;
-    } else {
-        // 相等时返回 0，修复原代码中相等返回 -1 的逻辑bug
-        return 0;
-    }
+    // if (da > db) {
+    //     return 1;
+    // } else if (da < db) {
+    //     return -1;
+    // } else {
+    //     // 相等时返回 0，修复原代码中相等返回 -1 的逻辑bug
+    //     return 0;
+    // }
 }
 void swap_book(book* a, book* b)
 {
@@ -140,18 +144,73 @@ void bookbubble(book* book1, int n)
     }
  }
 }
-int main()
-{
+// int main()
+// {
+//     int n;
+//     scanf("%d", &n);
+//     book* book1 = create_book(n);
+//     for(int i = 0; i < n; i++){
+//         scanf("%s %lf", book1[i].name, &book1[i].price);
+//     }
+//     qsort(book1,n,sizeof(book),cmp_double);
+//     //bookbubble(book1, n);
+//     for(int i = 0; i < n; i++){
+//         printf("%s %lf\n", book1[i].name, book1[i].price);
+//     }
+//     return 0;
+// }
+
+
+typedef struct direction{
+    int x;
+    int y;
+}direction;
+direction* create_direction(int n){
+    direction* dir = (direction*)malloc(sizeof(direction)*n);
+    if(dir == NULL){
+        return NULL;
+    }
+    for(int i = 0; i < n; i++){
+        dir[i].x = 0;
+        dir[i].y = 0;
+    }
+    return dir;
+}
+void print_direction(direction* dir, int n){
+    int sumx=0;
+    int sumy=0;
+    for(int i = 0; i < n; i++){
+        sumx += dir[i].x;
+        sumy += dir[i].y;
+    }
+    printf("%d %d\n", sumx, sumy);
+}
+// int main(){
+//     int n;
+//     scanf("%d", &n);
+//     direction* dir = create_direction(n);
+//     for(int i = 0; i < n; i++){
+//         scanf("%d%d", &dir[i].x, &dir[i].y);
+//     }
+//     print_direction(dir, n);
+//     return 0;
+// }
+
+
+
+
+int main(){
+    time_t now=time(NULL);
+    time(&now);
+    printf("%s",ctime(&now));
     int n;
     scanf("%d", &n);
-    book* book1 = create_book(n);
-    for(int i = 0; i < n; i++){
-        scanf("%s %lf", book1[i].name, &book1[i].price);
+    int* times = (int*)malloc(sizeof(int)*n);
+    if(times == NULL){
+        return 1;
     }
-    //qsort(book1,n,sizeof(book),cmp_double);
-    bookbubble(book1, n);
-    for(int i = 0; i < n; i++){
-        printf("%s %lf\n", book1[i].name, &book1[i].price);
+    for(int i=0;i<n;i++){
+        scanf("%d",&times[i]);
     }
     return 0;
 }
