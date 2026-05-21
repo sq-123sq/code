@@ -198,19 +198,73 @@ void print_direction(direction* dir, int n){
 
 
 
-
-int main(){
-    time_t now=time(NULL);
-    time(&now);
-    printf("%s",ctime(&now));
-    int n;
-    scanf("%d", &n);
-    int* times = (int*)malloc(sizeof(int)*n);
-    if(times == NULL){
-        return 1;
+typedef struct time2{
+    int hour;
+    int minute;
+    int second;
+}time2;
+time2* create_time(int n){
+    time2* reltime = (time2*)malloc(sizeof(time2)*n);
+    if(reltime == NULL){
+        return NULL;
     }
-    for(int i=0;i<n;i++){
-        scanf("%d",&times[i]);
+    for(int i = 0; i < n; i++){
+        reltime[i].hour = 0;
+        reltime[i].minute = 0;
+        reltime[i].second = 0;
     }
-    return 0;
+    return reltime;
 }
+void time_to_times(time2* time1, int* times, int n){
+    for(int i=0;i<n;i++){
+        int sum=0;//sum 为 第 i 个时间段的总秒数,一定要置0防重复
+        for(int j=0;j<=i;j++){
+            sum+=times[j];
+        }
+        time1[i].hour = sum/3600;
+        time1[i].minute = sum/60;
+        time1[i].second = sum%60;
+    }
+}
+void print_time(time2* time1, int n){
+    for(int i = 0; i < n; i++){
+        printf("%02d:%02d:%02d\n", time1[i].hour, time1[i].minute, time1[i].second);
+    }
+}
+// int main(){
+//     int n;
+//     scanf("%d", &n);
+//     time2* time1 = create_time(n);
+//     int* times = (int*)malloc(sizeof(int)*n);
+//     if(times == NULL){
+//         return 1;
+//     }
+//     for(int i=0;i<n;i++){
+//         scanf("%d",&times[i]);
+//     }
+//     time_to_times(time1,times,n);
+//     print_time(time1,n);
+//     return 0;
+// }
+
+void digit(int x, int i){
+    int temp = x;
+    int count = 0;
+    while(temp){
+        count++;
+        temp /= 10;
+    }
+    if(i > count){
+        printf("error\n");
+    }
+    else{
+        int digit = x %(int)pow(10, i) ;
+        printf("%d\n", digit);
+    }
+}
+// int main(){
+//     int x,i;
+//     scanf("%d%d",&x,&i);
+//     digit(x,i);
+//     return 0;
+// }
