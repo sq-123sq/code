@@ -25,7 +25,10 @@
 #define COL 10
 #define ROWS (ROW+2)
 #define COLS (COL+2)
-#define blesscount 10
+#define blesscount_health 10
+#define blesscount_attack 10
+#define blesscount_defense 10
+#define blesscount (blesscount_health+blesscount_attack+blesscount_defense)
 
 typedef struct player{
     char name[namesize];
@@ -52,6 +55,8 @@ void destoryenemy(enemy* e);
 void displayboard(char* board,int rows,int cols);
 void initboard(char* board,int rows,int cols,char c);
 void setbless(char* board,int rows,int cols);
+
+void findbless(player* p,enemy* e,char* mine,char* show,int rows,int cols);
 
 
 #endif // GAME_H

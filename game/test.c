@@ -23,7 +23,7 @@ void game()
     initboard(mine,ROWS,COLS,'0');
     initboard(show,ROWS,COLS,'*');
     setbless(mine,ROWS,COLS);
-    displayboard(mine,ROWS,COLS);
+    //displayboard(mine,ROWS,COLS);
     displayboard(show,ROWS,COLS);
     //2.创建玩家，敌人
     player* p=createplayer();
@@ -33,7 +33,7 @@ void game()
     displayplayer(p);
     displayenemy(e);
     //3.游戏逻辑
-
+    findbless(p,e,mine,show,ROWS,COLS);
 
     
     free(mine);
