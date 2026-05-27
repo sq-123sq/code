@@ -11,6 +11,8 @@
 #include <locale.h>
 #include <math.h>
 
+#define SLEEP_MS(x) Sleep(x)
+
 #define namesize 200
 #define playername "正义的战士"
 #define playerattack 233
@@ -35,12 +37,16 @@ typedef struct player{
     int health;
     int attack;
     int defense;
+    int x;
+    int y;
 }player;
 typedef struct enemy{
     char name[namesize];
     int health;
     int attack;
     int defense;
+    int x;
+    int y;
 }enemy;
 player* createplayer();
 enemy* createenemy();
@@ -52,11 +58,14 @@ void destoryplayer(player* p);
 void destoryenemy(enemy* e);
 
 
-void displayboard(char* board,int rows,int cols);
+void displayboard(char* board,int row,int col,int clos);
 void initboard(char* board,int rows,int cols,char c);
-void setbless(char* board,int rows,int cols);
+void setbless(char* board,int row,int col,int cols);
 
-void findbless(player* p,enemy* e,char* mine,char* show,int rows,int cols);
+void spawn_player(player* p,char* mine,char* show,int row,int col,int cols);
+void spawn_enemy(enemy* e,char* mine,char* show,int row,int col,int cols);
+
+void findbless(player* p,enemy* e,char* mine,char* show,int row,int col,int cols);
 
 
 #endif // GAME_H
