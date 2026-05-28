@@ -19,11 +19,11 @@
 //             break;
 //         }
 //         if (ret == 0) {
-//             printf("客户端断开连接\n");
+//             printf("服务端断开连接\n");
 //             break;
 //         }
 //         read_buffer[ret] = '\0';
-//         printf("收到客户端消息: %s", read_buffer);
+//         printf("收到服务端消息: %s", read_buffer);
 //     }
     
 //     closesocket(client_socket);
@@ -42,6 +42,7 @@
 //         int total_len = strlen(write_buffer);
 //         int sent_len = 0;
         
+//         // 处理部分发送的情况
 //         while (sent_len < total_len) {
 //             int ret = send(client_socket, write_buffer + sent_len, total_len - sent_len, 0);
 //             if (ret < 0) {
@@ -61,53 +62,33 @@
 //         return -1;
 //     }
 
-//     struct sockaddr_in server, client;
+//     struct sockaddr_in server;
 //     memset(&server, 0, sizeof(server));
-//     memset(&client, 0, sizeof(client));
 
 //     server.sin_family = AF_INET;
-//     server.sin_addr.s_addr = INADDR_ANY;
 //     server.sin_port = htons(PORT);
+//     // 将字符串IP转换为网络地址格式，这里连接本机
+//     inet_pton(AF_INET, "127.0.0.1", &server.sin_addr);
 
-//     SOCKET listen_socket = socket(AF_INET, SOCK_STREAM, 0);
-//     if (listen_socket == INVALID_SOCKET) {
+//     SOCKET client_socket = socket(AF_INET, SOCK_STREAM, 0);
+//     if (client_socket == INVALID_SOCKET) {
 //         perror("socket");
 //         WSACleanup();
 //         return -1;
 //     }
 
-//     int ret = bind(listen_socket, (struct sockaddr*)&server, sizeof(server));
+//     // 向服务端发起连接请求
+//     int ret = connect(client_socket, (struct sockaddr*)&server, sizeof(server));
 //     if (ret < 0) {
-//         perror("bind");
-//         closesocket(listen_socket);
+//         perror("connect");
+//         closesocket(client_socket);
 //         WSACleanup();
 //         return -1;
 //     }
 
-//     ret = listen(listen_socket, 5);
-//     if (ret < 0) {
-//         perror("listen");
-//         closesocket(listen_socket);
-//         WSACleanup();
-//         return -1;
-//     }
+//     printf("成功连接到服务端！\n");
 
-//     printf("服务端已启动，等待客户端连接...\n");
-
-//     int client_len = sizeof(client);
-//     SOCKET client_socket = accept(listen_socket, (struct sockaddr*)&client, &client_len);
-//     if (client_socket == INVALID_SOCKET) {
-//         perror("accept");
-//         closesocket(listen_socket);
-//         WSACleanup();
-//         return -1;
-//     }
-
-//     char ip_str[INET_ADDRSTRLEN];
-//     printf("连接到客户端:%s 端口号为:%d\n",
-//            inet_ntop(AF_INET, &client.sin_addr, ip_str, sizeof(ip_str)),
-//            ntohs(client.sin_port));
-
+//     // 创建读写线程实现全双工通信
 //     HANDLE read_tid = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)read_thread, (LPVOID)client_socket, 0, NULL);
 //     HANDLE write_tid = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)write_thread, (LPVOID)client_socket, 0, NULL);
 
@@ -118,7 +99,6 @@
 //     if (write_tid) CloseHandle(write_tid);
 
 //     closesocket(client_socket);
-//     closesocket(listen_socket);
 //     WSACleanup();
 
 //     return 0;

@@ -14,11 +14,11 @@
 #define SLEEP_MS(x) Sleep(x)
 
 #define namesize 200
-#define playername "正义的战士"
+#define player_name "正义的战士"
 #define playerattack 233
 #define playerdefense 100
 #define playerhealth 1000
-#define enemyname "邪恶的敌人"
+#define enemy_name "邪恶的敌人"
 #define enemyattack 130
 #define enemydefense 200
 #define enemyhealth 2000
@@ -65,7 +65,12 @@ void setbless(char* board,int row,int col,int cols);
 void spawn_player(player* p,char* mine,char* show,int row,int col,int cols);
 void spawn_enemy(enemy* e,char* mine,char* show,int row,int col,int cols);
 
-void findbless(player* p,enemy* e,char* mine,char* show,int row,int col,int cols);
+//void findbless(player* p,enemy* e,char* mine,char* show,int row,int col,int cols);
+
+// 新增：处理网页发来的一次点击指令
+// 返回值：0表示游戏继续，1表示游戏结束（赢了或输了）
+int process_click(int x, int y, player* p, enemy* e, char* mine, char* show, int row, int col, int actual_cols);
+
 
 
 #endif // GAME_H
