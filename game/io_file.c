@@ -24,35 +24,25 @@ int readclick(int* x, int* y)
 
 
 
-void writemap(char* board, int row, int col, int actual_cols)
-{
-    if (board == NULL || row <= 0 || col <= 0 || actual_cols <= 0) return;
+void writemap(char* show, int row, int col, int actual_cols) {
+    FILE* f = fopen("map.txt", "w");
+    if (!f) return;
 
-    FILE* fp = fopen("map.txt", "w"); 
-    if (fp == NULL) return;
-
-    // 输出JSON数组格式，例如：[["*","*","1"],["*"," ","0"]]
-    fprintf(fp, "[\n");
-    for (int i = 1; i <= row; i++)
-    {
-        fprintf(fp, "  ["); // 每行开始
-        for (int j = 1; j <= col; j++)
-        {
+    fprintf(f, "[");
+    int first = 1;
+    // 注意：从 1 遍历到 row/col，跳过边界哨兵
+    for (int i = 1; i <= row; i++) {
+        for (int j = 1; j <= col; j++) {
             int index = i * actual_cols + j;
-            char ch = board[index];
-            
-            // JSON中字符串需要加双引号
-            fprintf(fp, "\"%c\"", ch);
-            
-            // 如果不是本行最后一个元素，加逗号
-            if (j < col) fprintf(fp, ", ");
+            if (!first) fprintf(f, ", ");
+            fprintf(f, "\"%c\"", show[index]);
+            first = 0;
         }
-        // 如果不是最后一行，加逗号
-        fprintf(fp, "]%s\n", (i < row) ? "," : "");
     }
-    fprintf(fp, "]\n");
-    fclose(fp);
+    fprintf(f, "]");
+    fclose(f);
 }
+
 
 // 写入游戏状态（血量、攻防、胜负）供网页读取
 void writestatus(player* p, enemy* e, int game_over, int winner)

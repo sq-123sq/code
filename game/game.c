@@ -214,9 +214,9 @@ void spawn_enemy(enemy* e, char* mine, char* show, int row, int col, int actual_
         return;
     }
 
-    const char BLESS_ATTACK  = 'A';
-    const char BLESS_HEALTH  = 'H';
-    const char BLESS_DEFENSE = 'D';
+    // const char BLESS_ATTACK  = 'A';
+    // const char BLESS_HEALTH  = 'H';
+    // const char BLESS_DEFENSE = 'D';
     const char PLAYER_MARK   = 'P';
     const char ENEMY_MARK    = 'E';
     const char EMPTY_SPACE   = '0'; 
