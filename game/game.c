@@ -567,7 +567,7 @@ int process_click(int x, int y, player* p, enemy* e, char* mine, char* show, int
                     show[index] = bless_type;
                     game_over = 1;
                     winner = 2; 
-                    writemap(show, row, col, actual_cols);
+                    writemap(show, row, col, actual_cols,p, e);
                     writestatus(p, e, game_over, winner);
                     return 1; // 游戏结束
                 }
@@ -577,7 +577,7 @@ int process_click(int x, int y, player* p, enemy* e, char* mine, char* show, int
                     show[index] = bless_type;
                     game_over = 1;
                     winner = 1; 
-                    writemap(show, row, col, actual_cols);
+                    writemap(show, row, col, actual_cols,p,e);
                     writestatus(p, e, game_over, winner);
                     return 1; // 游戏结束
                 }
@@ -592,7 +592,7 @@ int process_click(int x, int y, player* p, enemy* e, char* mine, char* show, int
             }
             
             displayboard(show, row, col, actual_cols);
-            writemap(show, row, col, actual_cols);
+            writemap(show, row, col, actual_cols,p,e);
             writestatus(p, e, game_over, winner);
         }
     }
@@ -606,7 +606,7 @@ int process_click(int x, int y, player* p, enemy* e, char* mine, char* show, int
         printf("恭喜你，找到所有祝福\n");
         game_over = 1;
         winner = 1;
-        writemap(show, row, col, actual_cols);
+        writemap(show, row, col, actual_cols,p,e);
         writestatus(p, e, game_over, winner);
         return 1; // 游戏结束
     }
