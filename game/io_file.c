@@ -17,42 +17,34 @@ int readclick(int* x, int* y)
 
 // 修改后的 writemap：将玩家和敌人画入地图
 void writemap(char* show, int row, int col, int actual_cols, player* p, enemy* e) {
+    if (!show) return; // 防御性校验
+
     FILE* f = fopen("map.txt", "w");
     if (!f) return;
 
-    fprintf(f, "[\n"); // 开始整个大数组
+    fprintf(f, "[\n");
     for (int i = 1; i <= row; i++) {
-        fprintf(f, "  ["); // 开始一行
+        fprintf(f, "  [");
         for (int j = 1; j <= col; j++) {
             int index = i * actual_cols + j;
             char val = show[index];
 
-            // 【关键新增】：如果当前坐标是玩家的位置，强制覆写为 'P'
-            if (p != NULL && p->x == i && p->y == j) {
-                val = 'P';
-            }
-            // 【关键新增】：如果当前坐标是敌人的位置，强制覆写为 'E'
+            // 优先级处理：如果坐标重叠，优先显示玩家 P
             if (e != NULL && e->x == i && e->y == j) {
                 val = 'E';
             }
-
-            fprintf(f, "\"%c\"", val);
-            // 如果不是这一行的最后一个元素，加逗号
-            if (j < col) {
-                fprintf(f, ", ");
+            if (p != NULL && p->x == i && p->y == j) {
+                val = 'P'; // 后赋值覆盖，保证玩家可见
             }
+
+            fprintf(f, "\"%c\"%s", val, (j < col) ? ", " : "");
         }
-        fprintf(f, "]"); // 结束一行
-        // 如果不是最后一行，加逗号换行
-        if (i < row) {
-            fprintf(f, ",\n");
-        } else {
-            fprintf(f, "\n");
-        }
+        fprintf(f, "]%s", (i < row) ? ",\n" : "\n");
     }
-    fprintf(f, "]"); // 结束整个大数组
+    fprintf(f, "]\n");
     fclose(f);
 }
+
 
 // 写入游戏状态，补全坐标，修复末尾逗号
 void writestatus(player* p, enemy* e, int game_over, int winner)

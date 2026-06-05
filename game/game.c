@@ -29,12 +29,15 @@ void initplayer(player* p)
         perror("initplayer");
         return;
     }
-    strcpy(p->name,player_name);
+    strcpy(p->name,playername);
     p->attack=playerattack;
     p->defense=playerdefense;
     p->health=playerhealth;
     p->x=0;
     p->y=0;
+    p->battle_round = 0;
+    p->found_bless_count = 0;
+    p->has_health_bless = 0; // 初始化时没有找到生命祝福
 }
 void initenemy(enemy* e)
 {
@@ -43,7 +46,7 @@ void initenemy(enemy* e)
         perror("initenemy");
         return;
     }
-    strcpy(e->name,enemy_name);
+    strcpy(e->name,enemyname);
     e->attack=enemyattack;
     e->defense=enemydefense;
     e->health=enemyhealth;
@@ -313,7 +316,7 @@ void expand_bless(char* mine, char* show, int x, int y, int row, int col, int ac
     if (count == 0) 
     {
         // 周围没有祝福，显示空格
-        show[index] = ' ';
+        show[index] = '0';
         
         // 递归排查周围8个坐标：传入逻辑大小和物理大小
         for (int i = -1; i <= 1; i++) 
@@ -496,120 +499,114 @@ void expand_bless(char* mine, char* show, int x, int y, int row, int col, int ac
 // 将 findbless 重构为单步响应函数
 int process_click(int x, int y, player* p, enemy* e, char* mine, char* show, int row, int col, int actual_cols)
 {
-    // 静态变量保留游戏状态（因为每次调用只处理一步，不能丢失之前的进度）
-    static int battle_round = 0; 
-    static int found_bless_count = 0;
-    static int has_health_bless = 0;
-    
+    // 常量定义
     const int bless_value = 100;
     const int decay_value = 10; 
+    
+    // 游戏状态标志
     int game_over = 0;
     int winner = 0;
+    int need_update = 0; // 标记是否需要更新文件
 
     // 1. 坐标合法性判断
-    if (x >= 1 && x <= row && y >= 1 && y <= col && 
-        !(x == p->x && y == p->y) && !(x == e->x && y == e->y))
+    if (x < 1 || x > row || y < 1 || y > col || 
+        (x == p->x && y == p->y) || (x == e->x && y == e->y))
     {
-        int index = x * actual_cols + y;
+        printf("坐标不合法或该位置被占用\n");
+        return 0;
+    }
 
-        if (show[index] != '*' && show[index] != 'P' && show[index] != 'E')
+    int index = x * actual_cols + y;
+
+    // 2. 判断是否已翻开
+    if (show[index] != '*' && show[index] != 'P' && show[index] != 'E')
+    {
+        printf("该坐标已经被祈福过，请不要重复选择\n");
+        return 0; 
+    }
+
+    // 3. 处理点击逻辑
+    char bless_type = mine[index];
+    int is_bless = (bless_type == 'H' || bless_type == 'A' || bless_type == 'D');
+
+    if (is_bless)
+    {
+        // --- 祝福处理 ---
+        switch (bless_type)
         {
-            printf("该坐标已经被祈福过，请不要重复选择\n");
-            // 重复点击，游戏不结束，返回0
-            return 0; 
-        }
-        else
-        {
-            char bless_type = mine[index];
-            int is_bless = 0;
-            
-            if (bless_type == 'H')
-            {
+            case 'H':
                 printf("恭喜你，获得生命祝福！攻防不再降低！\n");
                 p->health += bless_value;
-                has_health_bless = 1; 
-                is_bless = 1;
-            }
-            else if (bless_type == 'A')
-            {
+                p->has_health_bless = 1; // 依赖结构体字段
+                break;
+            case 'A':
                 printf("恭喜你，获得攻击祝福！\n");
                 p->attack += bless_value;
-                is_bless = 1;
-            }
-            else if (bless_type == 'D')
-            {
+                break;
+            case 'D':
                 printf("恭喜你，获得防御祝福！\n");
                 p->defense += bless_value;
-                is_bless = 1;
-            }
+                break;
+        }
 
-            if (is_bless)
-            {
-                battle_round++;
-                printf("--- 第%d轮战斗开始 ---\n", battle_round);
-                
-                if (!has_health_bless)
-                {
-                    p->attack -= decay_value;
-                    p->defense -= decay_value;
-                    if (p->attack < 0) p->attack = 0;
-                    if (p->defense < 0) p->defense = 0;
-                    printf("由于未获得生命祝福，玩家攻防降低！当前攻击:%d, 当前防御:%d\n", p->attack, p->defense);
-                }
+        // --- 战斗逻辑 ---
+        p->battle_round++; // 依赖结构体字段
+        printf("--- 第%d轮战斗开始 ---\n", p->battle_round);
+        
+        if (!p->has_health_bless)
+        {
+            p->attack -= decay_value;
+            p->defense -= decay_value;
+            if (p->attack < 0) p->attack = 0;
+            if (p->defense < 0) p->defense = 0;
+            printf("由于未获得生命祝福，玩家攻防降低！当前攻击:%d, 当前防御:%d\n", p->attack, p->defense);
+        }
 
-                p->health -= e->attack;
-                e->health -= p->attack;
-                printf("战斗结束！玩家当前生命值为:%d，敌人当前生命值为:%d\n", p->health, e->health);
-                
-                if (p->health <= 0)
-                {
-                    printf("玩家已死亡，游戏结束\n");
-                    show[index] = bless_type;
-                    game_over = 1;
-                    winner = 2; 
-                    writemap(show, row, col, actual_cols,p, e);
-                    writestatus(p, e, game_over, winner);
-                    return 1; // 游戏结束
-                }
-                if (e->health <= 0)
-                {
-                    printf("敌人已死亡，玩家挑战成功\n");
-                    show[index] = bless_type;
-                    game_over = 1;
-                    winner = 1; 
-                    writemap(show, row, col, actual_cols,p,e);
-                    writestatus(p, e, game_over, winner);
-                    return 1; // 游戏结束
-                }
-                
-                show[index] = bless_type;
-                found_bless_count++;
-            }
-            else
-            {
-                // 当前坐标没有祝福，递归展开
-                expand_bless(mine, show, x, y, row, col, actual_cols);
-            }
-            
-            displayboard(show, row, col, actual_cols);
-            writemap(show, row, col, actual_cols,p,e);
-            writestatus(p, e, game_over, winner);
+        p->health -= e->attack;
+        e->health -= p->attack;
+        printf("战斗结束！玩家当前生命值为:%d，敌人当前生命值为:%d\n", p->health, e->health);
+        
+        show[index] = bless_type;
+        p->found_bless_count++; // 依赖结构体字段
+        need_update = 1;
+
+        // 判定生死
+        if (p->health <= 0)
+        {
+            printf("玩家已死亡，游戏结束\n");
+            game_over = 1;
+            winner = 2; 
+        }
+        else if (e->health <= 0)
+        {
+            printf("敌人已死亡，玩家挑战成功\n");
+            game_over = 1;
+            winner = 1; 
         }
     }
     else
     {
-        printf("坐标不合法或该位置被占用\n");
+        // --- 空地递归展开 ---
+        expand_bless(mine, show, x, y, row, col, actual_cols);
+        need_update = 1;
     }
 
-    // 判断是否找齐了所有祝福
-    if (found_bless_count >= blesscount) {
-        printf("恭喜你，找到所有祝福\n");
-        game_over = 1;
-        winner = 1;
-        writemap(show, row, col, actual_cols,p,e);
+    // 4. 统一状态更新与文件写入 (消除冗余IO)
+    if (need_update)
+    {
+        // 检查是否找齐所有祝福
+        if (!game_over && p->found_bless_count >= blesscount) 
+        {
+            printf("恭喜你，找到所有祝福\n");
+            game_over = 1;
+            winner = 1;
+        }
+
+        displayboard(show, row, col, actual_cols);
+        writemap(show, row, col, actual_cols, p, e);
         writestatus(p, e, game_over, winner);
-        return 1; // 游戏结束
     }
 
-    return 0; // 游戏继续
+    return game_over;
 }
+

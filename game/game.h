@@ -14,11 +14,11 @@
 #define SLEEP_MS(x) Sleep(x)
 
 #define namesize 200
-#define player_name "正义的战士"
+#define playername "正义的战士"
 #define playerattack 233
 #define playerdefense 100
 #define playerhealth 1000
-#define enemy_name "邪恶的敌人"
+#define enemyname "邪恶的敌人"
 #define enemyattack 130
 #define enemydefense 200
 #define enemyhealth 2000
@@ -39,6 +39,10 @@ typedef struct player{
     int defense;
     int x;
     int y;
+    // 【新增这三个字段，替代原来的 static 变量】
+    int battle_round;       
+    int found_bless_count;  
+    int has_health_bless;
 }player;
 typedef struct enemy{
     char name[namesize];
