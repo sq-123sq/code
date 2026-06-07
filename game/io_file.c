@@ -56,9 +56,13 @@ void writestatus(player* p, enemy* e, int game_over, int winner)
     fprintf(fp, "  \"game_over\": %d,\n", game_over);
     fprintf(fp, "  \"winner\": %d,\n", winner);
     // 增加坐标 x, y (注意：如果你的结构体里坐标变量名不是 x 和 y，请自行修改 p->x 和 p->y)
-    fprintf(fp, "  \"player\": {\"health\": %d, \"attack\": %d, \"defense\": %d, \"x\": %d, \"y\": %d},\n", p->health, p->attack, p->defense, p->x, p->y);
-    fprintf(fp, "  \"enemy\": {\"health\": %d, \"attack\": %d, \"x\": %d, \"y\": %d}\n", e->health, e->attack, e->x, e->y);
-    fprintf(fp, "}\n");
+    // fprintf(fp, "  \"player\": {\"health\": %d, \"attack\": %d, \"defense\": %d, \"x\": %d, \"y\": %d},\n", p->health, p->attack, p->defense, p->x, p->y);
+    // fprintf(fp, "  \"enemy\": {\"health\": %d, \"attack\": %d, \"x\": %d, \"y\": %d}\n", e->health, e->attack, e->x, e->y);
+    // fprintf(fp, "}\n");
+     // 【关键新增】：加入 name 字段，使用你定义的宏
+     fprintf(fp, "  \"player\": {\"name\": \"%s\", \"health\": %d, \"attack\": %d, \"defense\": %d, \"x\": %d, \"y\": %d},\n", playername, p->health, p->attack, p->defense, p->x, p->y);
+     fprintf(fp, "  \"enemy\": {\"name\": \"%s\", \"health\": %d, \"attack\": %d, \"x\": %d, \"y\": %d}\n", enemyname, e->health, e->attack, e->x, e->y);
+     fprintf(fp, "}\n");
 
     fclose(fp);
 }
