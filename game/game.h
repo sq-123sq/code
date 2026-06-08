@@ -14,11 +14,11 @@
 #define SLEEP_MS(x) Sleep(x)
 
 #define namesize 200
-#define playername "ÕıÒåµÄÕ½Ê¿"
+#define playername "æ­£ä¹‰çš„æˆ˜å£«"
 #define playerattack 233
 #define playerdefense 100
 #define playerhealth 1000
-#define enemyname "Ğ°¶ñµÄµĞÈË"
+#define enemyname "é‚ªæ¶çš„æ•Œäºº"
 #define enemyattack 130
 #define enemydefense 200
 #define enemyhealth 2000
@@ -39,7 +39,7 @@ typedef struct player{
     int defense;
     int x;
     int y;
-    // ¡¾ĞÂÔöÕâÈı¸ö×Ö¶Î£¬Ìæ´úÔ­À´µÄ static ±äÁ¿¡¿
+    // ã€æ–°å¢è¿™ä¸‰ä¸ªå­—æ®µï¼Œæ›¿ä»£åŸæ¥çš„ static å˜é‡ã€‘
     int battle_round;       
     int found_bless_count;  
     int has_health_bless;
@@ -71,8 +71,8 @@ void spawn_enemy(enemy* e,char* mine,char* show,int row,int col,int cols);
 
 //void findbless(player* p,enemy* e,char* mine,char* show,int row,int col,int cols);
 
-// ĞÂÔö£º´¦ÀíÍøÒ³·¢À´µÄÒ»´Îµã»÷Ö¸Áî
-// ·µ»ØÖµ£º0±íÊ¾ÓÎÏ·¼ÌĞø£¬1±íÊ¾ÓÎÏ·½áÊø£¨Ó®ÁË»òÊäÁË£©
+// æ–°å¢ï¼šå¤„ç†ç½‘é¡µå‘æ¥çš„ä¸€æ¬¡ç‚¹å‡»æŒ‡ä»¤
+// è¿”å›å€¼ï¼š0è¡¨ç¤ºæ¸¸æˆç»§ç»­ï¼Œ1è¡¨ç¤ºæ¸¸æˆç»“æŸï¼ˆèµ¢äº†æˆ–è¾“äº†ï¼‰
 int process_click(int x, int y, player* p, enemy* e, char* mine, char* show, int row, int col, int actual_cols);
 
 
