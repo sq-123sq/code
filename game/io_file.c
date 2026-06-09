@@ -61,7 +61,8 @@ void writestatus(player* p, enemy* e, int game_over, int winner)
     // fprintf(fp, "}\n");
      // 【关键新增】：加入 name 字段，使用你定义的宏
      fprintf(fp, "  \"player\": {\"name\": \"%s\", \"health\": %d, \"attack\": %d, \"defense\": %d, \"x\": %d, \"y\": %d},\n", playername, p->health, p->attack, p->defense, p->x, p->y);
-     fprintf(fp, "  \"enemy\": {\"name\": \"%s\", \"health\": %d, \"attack\": %d, \"x\": %d, \"y\": %d}\n", enemyname, e->health, e->attack, e->x, e->y);
+     // 【关键新增】：加入敌人的 defense 字段
+     fprintf(fp, "  \"enemy\": {\"name\": \"%s\", \"health\": %d, \"attack\": %d, \"defense\": %d, \"x\": %d, \"y\": %d}\n", enemyname, e->health, e->attack, e->defense, e->x, e->y);
      fprintf(fp, "}\n");
 
     fclose(fp);

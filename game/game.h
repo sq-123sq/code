@@ -51,6 +51,8 @@ typedef struct enemy{
     int defense;
     int x;
     int y;
+    int found_bless_count; // 【新增】：记录敌人找到的祝福数，用于判断游戏结束
+    // int has_health_bless; // 可选：如果想让敌人也有免衰减机制可以加上
 }enemy;
 player* createplayer();
 enemy* createenemy();
