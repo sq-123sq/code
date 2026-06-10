@@ -154,7 +154,7 @@ void init_game()
 
     // 4. 生成初始地图文件给网页看
     writemap(g_show, ROW, COL, COLS,g_p,g_e);
-    writestatus(g_p, g_e, 0, 0);
+    writestatus(g_p, g_e, 0, 0,-1,-1);
     
     printf("游戏初始化完成！\n");
 }
@@ -216,13 +216,13 @@ void handle_client_request(SOCKET client_socket) {
         }
         free(json_buf);
 
-        // 4. 执行游戏逻辑（仅在坐标有效时执行）
-        int game_status = 0;
-        if (x != -1 && y != -1) {
-            game_status = process_click(x, y, g_p, g_e, g_mine, g_show, ROW, COL, COLS);
-            writemap(g_show, ROW, COL, COLS,g_p,g_e);
-            writestatus(g_p, g_e, game_status, 0); 
-        }
+            // 4. 执行游戏逻辑
+            int game_status = 0;
+                if (x != -1 && y != -1) {
+                    // writemap 和 writestatus 已经在 process_click 内部自动调用了
+                    game_status = process_click(x, y, g_p, g_e, g_mine, g_show, ROW, COL, COLS);
+                }
+        
 
         // 5. 构造响应 JSON
         cJSON *res = cJSON_CreateObject();

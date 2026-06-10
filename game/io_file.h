@@ -6,4 +6,4 @@ int readclick(int* x, int* y);
 // 将棋盘内容写入文件供网页读取
 void writemap(char* board, int row, int col, int actual_cols,player* p, enemy* e);
 
-void writestatus(player* p, enemy* e, int game_over, int winner);
+void writestatus(player* p, enemy* e, int game_over, int winner,int e_click_x,int e_click_y);
