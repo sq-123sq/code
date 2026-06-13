@@ -33,6 +33,7 @@
 #define blesscount (blesscount_health+blesscount_attack+blesscount_defense)
 
 typedef struct player{
+    int room_id; // 【新增】：房间号，-1表示未分配
     char name[namesize];
     int health;
     int attack;
@@ -45,6 +46,7 @@ typedef struct player{
     int has_health_bless;
 }player;
 typedef struct enemy{
+    int room_id; // 【新增】：房间号，-1表示未分配
     char name[namesize];
     int health;
     int attack;
@@ -75,7 +77,7 @@ void spawn_enemy(enemy* e,char* mine,char* show,int row,int col,int cols);
 
 // 新增：处理网页发来的一次点击指令
 // 返回值：0表示游戏继续，1表示游戏结束（赢了或输了）
-int process_click(int x, int y, player* p, enemy* e, char* mine, char* show, int row, int col, int actual_cols);
+int process_click(int room_id,int x, int y, player* p, enemy* e, char* mine, char* show, int row, int col, int actual_cols);
 
 
 

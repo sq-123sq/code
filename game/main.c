@@ -113,50 +113,103 @@
 
 #define PORT 1234
 
-// 全局游戏数据
-player* g_p = NULL;
-enemy* g_e = NULL;
-char* g_mine = NULL;
-char* g_show = NULL;
+// // 全局游戏数据
+// player* g_p = NULL;
+// enemy* g_e = NULL;
+// char* g_mine = NULL;
+// char* g_show = NULL;
 
-// ==========================================
-// 2. 游戏初始化逻辑
-// ==========================================
-void init_game()
-{
-    // 如果是重新开局，先释放旧资源
-    if (g_mine) free(g_mine);
-    if (g_show) free(g_show);
-    if (g_p) destoryplayer(g_p);
-    if (g_e) destoryenemy(g_e);
+// // ==========================================
+// // 2. 游戏初始化逻辑
+// // ==========================================
+// void init_game()
+// {
+//     // 如果是重新开局，先释放旧资源
+//     if (g_mine) free(g_mine);
+//     if (g_show) free(g_show);
+//     if (g_p) destoryplayer(g_p);
+//     if (g_e) destoryenemy(g_e);
 
-    // 1. 创建场地
-    g_mine = (char*)malloc(sizeof(char) * ROWS * COLS);
-    g_show = (char*)malloc(sizeof(char) * ROWS * COLS);
-    if(g_mine == NULL || g_show == NULL)
-    {
-        printf("malloc error\n");
-        exit(1);
-    }
-    initboard(g_mine, ROWS, COLS, '0');
-    initboard(g_show, ROWS, COLS, '*');
-    setbless(g_mine, ROW, COL, COLS);
+//     // 1. 创建场地
+//     g_mine = (char*)malloc(sizeof(char) * ROWS * COLS);
+//     g_show = (char*)malloc(sizeof(char) * ROWS * COLS);
+//     if(g_mine == NULL || g_show == NULL)
+//     {
+//         printf("malloc error\n");
+//         exit(1);
+//     }
+//     initboard(g_mine, ROWS, COLS, '0');
+//     initboard(g_show, ROWS, COLS, '*');
+//     setbless(g_mine, ROW, COL, COLS);
 
-    // 2. 创建玩家，敌人
-    g_p = createplayer();
-    initplayer(g_p);
-    g_e = createenemy();
-    initenemy(g_e);
+//     // 2. 创建玩家，敌人
+//     g_p = createplayer();
+//     initplayer(g_p);
+//     g_e = createenemy();
+//     initenemy(g_e);
 
-    // 3. 设置玩家，敌人位置
-    spawn_player(g_p, g_mine, g_show, ROW, COL, COLS);
-    spawn_enemy(g_e, g_mine, g_show, ROW, COL, COLS);
+//     // 3. 设置玩家，敌人位置
+//     spawn_player(g_p, g_mine, g_show, ROW, COL, COLS);
+//     spawn_enemy(g_e, g_mine, g_show, ROW, COL, COLS);
 
-    // 4. 生成初始地图文件给网页看
-    writemap(g_show, ROW, COL, COLS,g_p,g_e);
-    writestatus(g_p, g_e, 0, 0,-1,-1);
+//     // 4. 生成初始地图文件给网页看
+//     writemap(g_show, ROW, COL, COLS,g_p,g_e);
+//     writestatus(g_p, g_e, 0, 0,-1,-1);
     
-    printf("游戏初始化完成！\n");
+//     printf("游戏初始化完成！\n");
+// }
+#define MAX_ROOMS 10 // 最大同时进行的房间数
+
+// 1. 全局游戏数据改为数组
+player* g_p[MAX_ROOMS] = {NULL};
+enemy* g_e[MAX_ROOMS] = {NULL};
+char* g_mine[MAX_ROOMS] = {NULL};
+char* g_show[MAX_ROOMS] = {NULL};
+
+// 2. 辅助函数：根据 room_id 找到数组索引
+int find_room_index(int room_id) {
+    for (int i = 0; i < MAX_ROOMS; i++) {
+        // 如果该索引有玩家，且 room_id 匹配
+        if (g_p[i] != NULL && g_p[i]->room_id == room_id) {
+            return i;
+        }
+    }
+    return -1; // 没找到
+}
+
+// 3. 初始化指定房间 (替代原来的 init_game)
+void init_game_room(int room_id) {
+    int idx = -1;
+    // 找一个空槽位
+    for (int i = 0; i < MAX_ROOMS; i++) {
+        if (g_p[i] == NULL) { idx = i; break; }
+    }
+    if (idx == -1) { printf("服务器已满！\n"); return; }
+
+    // 释放旧资源 (安全起见)
+    if (g_mine[idx]) free(g_mine[idx]);
+    if (g_show[idx]) free(g_show[idx]);
+    if (g_p[idx]) destoryplayer(g_p[idx]);
+    if (g_e[idx]) destoryenemy(g_e[idx]);
+
+    // 分配新资源
+    g_mine[idx] = (char*)malloc(sizeof(char) * ROWS * COLS);
+    g_show[idx] = (char*)malloc(sizeof(char) * ROWS * COLS);
+    initboard(g_mine[idx], ROWS, COLS, '0');
+    initboard(g_show[idx], ROWS, COLS, '*');
+    setbless(g_mine[idx], ROW, COL, COLS);
+
+    g_p[idx] = createplayer(); initplayer(g_p[idx]); g_p[idx]->room_id = room_id;
+    g_e[idx] = createenemy(); initenemy(g_e[idx]); g_e[idx]->room_id = room_id;
+
+    spawn_player(g_p[idx], g_mine[idx], g_show[idx], ROW, COL, COLS);
+    spawn_enemy(g_e[idx], g_mine[idx], g_show[idx], ROW, COL, COLS);
+
+    // 写入带 room_id 的文件
+    writemap(g_show[idx], ROW, COL, COLS, g_p[idx], g_e[idx], room_id);
+    writestatus(g_p[idx], g_e[idx], 0, 0, -1, -1, room_id);
+    
+    printf("房间 %d 初始化完成！\n", room_id);
 }
 
 // ==========================================

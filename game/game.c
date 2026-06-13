@@ -683,7 +683,7 @@ void enemy_ai_choose(char* mine, char* show, enemy* e, int row, int col, int act
 }
 
 
-int process_click(int x, int y, player* p, enemy* e, char* mine, char* show, int row, int col, int actual_cols)
+int process_click(int room_id,int x, int y, player* p, enemy* e, char* mine, char* show, int row, int col, int actual_cols)
 {
     const int bless_value = 100;
     const int decay_value = 10; 
@@ -814,4 +814,3 @@ int process_click(int x, int y, player* p, enemy* e, char* mine, char* show, int
     
         return game_over;
 }
-

@@ -16,10 +16,12 @@ int readclick(int* x, int* y)
 }
 
 // 修改后的 writemap：将玩家和敌人画入地图
-void writemap(char* show, int row, int col, int actual_cols, player* p, enemy* e) {
+void writemap(char* show, int row, int col, int actual_cols, player* p, enemy* e,int room_id) {
     if (!show) return; // 防御性校验
-
-    FILE* f = fopen("map.txt", "w");
+     // 【关键修改】：根据 room_id 拼接不同的文件名
+    char filename[64];
+    sprintf(filename, "status_%d.txt", room_id); // 房间1写入 status_1.txt
+    FILE* f = fopen(filename, "w");
     if (!f) return;
 
     fprintf(f, "[\n");
@@ -47,23 +49,20 @@ void writemap(char* show, int row, int col, int actual_cols, player* p, enemy* e
 
 
 // 写入游戏状态，补全坐标，修复末尾逗号
-void writestatus(player* p, enemy* e, int game_over, int winner,int e_click_x,int e_click_y)
+void writestatus(player* p, enemy* e, int game_over, int winner, int e_click_x, int e_click_y, int room_id)
 {
-    FILE* fp = fopen("status.txt", "w");
+     // 【关键修改】：根据 room_id 拼接不同的文件名
+    char filename[64];
+    sprintf(filename, "status_%d.txt", room_id); // 房间1写入 status_1.txt
+    FILE* fp = fopen(filename, "w");
     if (fp == NULL) return;
 
     fprintf(fp, "{\n");
     fprintf(fp, "  \"game_over\": %d,\n", game_over);
     fprintf(fp, "  \"winner\": %d,\n", winner);
-    // 增加坐标 x, y (注意：如果你的结构体里坐标变量名不是 x 和 y，请自行修改 p->x 和 p->y)
-    // fprintf(fp, "  \"player\": {\"health\": %d, \"attack\": %d, \"defense\": %d, \"x\": %d, \"y\": %d},\n", p->health, p->attack, p->defense, p->x, p->y);
-    // fprintf(fp, "  \"enemy\": {\"health\": %d, \"attack\": %d, \"x\": %d, \"y\": %d}\n", e->health, e->attack, e->x, e->y);
-    // fprintf(fp, "}\n");
-     // 【关键新增】：加入 name 字段，使用你定义的宏
-     fprintf(fp, "  \"player\": {\"name\": \"%s\", \"health\": %d, \"attack\": %d, \"defense\": %d, \"x\": %d, \"y\": %d},\n", playername, p->health, p->attack, p->defense, p->x, p->y);
-      // 【关键新增】：加入敌人的 defense 字段和 e_click_x, e_click_y
-     fprintf(fp, "  \"enemy\": {\"name\": \"%s\", \"health\": %d, \"attack\": %d, \"defense\": %d, \"x\": %d, \"y\": %d, \"e_click_x\": %d, \"e_click_y\": %d}\n", enemyname, e->health, e->attack, e->defense, e->x, e->y, e_click_x, e_click_y);
-     fprintf(fp, "}\n");
+    fprintf(fp, "  \"player\": {\"name\": \"%s\", \"health\": %d, \"attack\": %d, \"defense\": %d, \"x\": %d, \"y\": %d},\n", playername, p->health, p->attack, p->defense, p->x, p->y);
+    fprintf(fp, "  \"enemy\": {\"name\": \"%s\", \"health\": %d, \"attack\": %d, \"defense\": %d, \"x\": %d, \"y\": %d, \"e_click_x\": %d, \"e_click_y\": %d}\n", enemyname, e->health, e->attack, e->defense, e->x, e->y, e_click_x, e_click_y);
+    fprintf(fp, "}\n");
 
     fclose(fp);
 }
