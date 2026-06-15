@@ -158,54 +158,78 @@
     
 //     printf("游戏初始化完成！\n");
 // }
-
+// 1. 定义常量 (推荐)
+#define MAX_ROOMS 10  // 最大房间数
 // --- 全局模式控制 ---
 int g_mode = 0;        // 0: 人机对战(PVE), 1: 匹配对战(PVP)
 int g_pvp_room_id = 0; // 当前匹配对战的房间号
 
-// 全局游戏数据
-player* g_p[10] = {NULL}; // 索引0留给PVE，1~9留给PVP
-enemy* g_e[10] = {NULL};
-char* g_mine[10] = {NULL};
-char* g_show[10] = {NULL};
+// 2. 定义全局变量 (放在 main 函数外面)
+player* g_p[MAX_ROOMS] = {NULL}; 
+enemy* g_e[MAX_ROOMS] = {NULL};
+char* g_mine[MAX_ROOMS] = {NULL};
+char* g_show[MAX_ROOMS] = {NULL};
 
-// 查找房间索引
+// 3. 辅助函数 (也放在 main 外面)
+// 根据 room_id 查找对应的数组索引
 int find_room_index(int room_id) {
-    for (int i = 0; i < 10; i++) {
-        if (g_p[i] != NULL && g_p[i]->room_id == room_id) return i;
+    // 遍历所有房间，匹配 room_id
+    for (int i = 0; i < MAX_ROOMS; i++) {
+        // 检查该位置是否已初始化，且 room_id 匹配
+        if (g_p[i] != NULL && g_p[i]->room_id == room_id) {
+            return i;
+        }
     }
-    return -1;
+    return -1; // 没找到
 }
 
 // 人机对战初始化 (固定使用索引0)
 void init_game_pve() {
-    int idx = 0;
+    int idx = 0; // PVE 默认使用索引 0
+    
+    // 1. 清理旧内存
     if (g_mine[idx]) free(g_mine[idx]);
     if (g_show[idx]) free(g_show[idx]);
     if (g_p[idx]) destoryplayer(g_p[idx]);
     if (g_e[idx]) destoryenemy(g_e[idx]);
 
+    // 2. 分配新内存
     g_mine[idx] = (char*)malloc(sizeof(char) * ROWS * COLS);
     g_show[idx] = (char*)malloc(sizeof(char) * ROWS * COLS);
+    
+    // 3. 初始化地图数据
     initboard(g_mine[idx], ROWS, COLS, '0');
     initboard(g_show[idx], ROWS, COLS, '*');
     setbless(g_mine[idx], ROW, COL, COLS);
 
-    g_p[idx] = createplayer(); initplayer(g_p[idx]); g_p[idx]->room_id = 0;
-    g_e[idx] = createenemy(); initenemy(g_e[idx]); g_e[idx]->room_id = 0;
+    // 4. 创建并初始化实体
+    g_p[idx] = createplayer(); 
+    initplayer(g_p[idx]); 
+    // 修复：设置 room_id 为 1
+    g_p[idx]->room_id = 1; 
+    
+    g_e[idx] = createenemy(); 
+    initenemy(g_e[idx]); 
+    // 修复：设置 room_id 为 1
+    g_e[idx]->room_id = 1;
 
+    // 5. 生成位置
     spawn_player(g_p[idx], g_mine[idx], g_show[idx], ROW, COL, COLS);
     spawn_enemy(g_e[idx], g_mine[idx], g_show[idx], ROW, COL, COLS);
 
-    writemap(g_show[idx], ROW, COL, COLS, g_p[idx], g_e[idx], 0);
-    writestatus(g_p[idx], g_e[idx], 0, 0, -1, -1, 0);
+    // 6. 写入文件/状态
+    // 修复：写入 room_id 为 1
+    writemap(g_show[idx], ROW, COL, COLS, g_p[idx], g_e[idx], 1);
+    writestatus(g_p[idx], g_e[idx], 0, 0, -1, -1, 1);
+    
     printf("人机对战房间初始化完成！\n");
 }
+
 
 // 匹配对战初始化 (动态分配索引)
 void init_game_pvp(int room_id) {
     int idx = -1;
-    for (int i = 1; i < 10; i++) { // 从1开始找空位，0留给PVE
+    for (int i = 1; i < MAX_ROOMS; i++) { // 从1开始找空位，0留给PVE
         if (g_p[i] == NULL) { idx = i; break; }
     }
     if (idx == -1) { printf("服务器已满！\n"); return; }
@@ -321,9 +345,9 @@ void handle_client_request(SOCKET client_socket) {
         int idx = (g_mode == 0) ? 0 : find_room_index(g_pvp_room_id);
 
         if (idx != -1 && x != -1 && y != -1) {
-            game_status = process_click(x, y, g_p[idx], g_e[idx], g_mine[idx], g_show[idx], ROW, COL, COLS);
-            winner = g_p[idx]->room_id; 
-            g_p[idx]->room_id = (g_mode == 0) ? 0 : g_pvp_room_id; // 恢复正确的 room_id
+            game_status = process_click(req_room_id, g_mode, x, y, g_p[idx], g_e[idx], g_mine[idx], g_show[idx], ROW, COL, COLS);
+            // winner = g_p[idx]->room_id; 
+            // g_p[idx]->room_id = (g_mode == 0) ? 0 : g_pvp_room_id; // 恢复正确的 room_id
         }
 
         // ==========================================
@@ -457,7 +481,7 @@ int main()
     srand((unsigned int)time(NULL));
     
     // 1. 初始化游戏数据
-    init_game();
+    init_game_pve();
 
     // 2. 创建 Socket
     SOCKET server_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -499,10 +523,12 @@ int main()
 
     // 5. 释放资源 (死循环后很少执行，但保持好习惯)
     closesocket(server_fd);
-    if(g_mine) free(g_mine);
-    if(g_show) free(g_show);
-    if(g_p) destoryplayer(g_p);
-    if(g_e) destoryenemy(g_e);
+    for (int i = 0; i < 10; i++) {
+        if (g_mine[i]) free(g_mine[i]);
+        if (g_show[i]) free(g_show[i]);
+        if (g_p[i]) destoryplayer(g_p[i]);
+        if (g_e[i]) destoryenemy(g_e[i]);
+    }    
     
     #ifdef _WIN32
         WSACleanup();

@@ -13,6 +13,7 @@
 
 #define SLEEP_MS(x) Sleep(x)
 
+
 #define namesize 200
 #define playername "正义的战士"
 #define playerattack 233
@@ -77,7 +78,7 @@ void spawn_enemy(enemy* e,char* mine,char* show,int row,int col,int cols);
 
 // 新增：处理网页发来的一次点击指令
 // 返回值：0表示游戏继续，1表示游戏结束（赢了或输了）
-int process_click(int room_id,int x, int y, player* p, enemy* e, char* mine, char* show, int row, int col, int actual_cols);
+int process_click(int room_id,int game_mode,int x, int y, player* p, enemy* e, char* mine, char* show, int row, int col, int actual_cols);
 
 
 

@@ -682,135 +682,152 @@ void enemy_ai_choose(char* mine, char* show, enemy* e, int row, int col, int act
     *out_y = -1;
 }
 
-
-int process_click(int room_id,int x, int y, player* p, enemy* e, char* mine, char* show, int row, int col, int actual_cols)
-{
-    const int bless_value = 100;
-    const int decay_value = 10; 
-    int game_over = 0;
-    int winner = 0;
-    int need_update = 0;
-
-    // ==========================================
-    // 第一阶段：玩家回合
-    // ==========================================
-    if (x >= 1 && x <= row && y >= 1 && y <= col && 
-        !(x == p->x && y == p->y) && !(x == e->x && y == e->y))
-    {
-        int index = x * actual_cols + y;
-
-        if (show[index] != '*' && show[index] != 'P' && show[index] != 'E')
-        {
-            printf("玩家重复点击\n");
+// 辅助函数：处理单个实体的点击逻辑
+// current: 当前操作的实体, opponent: 对手
+// is_current_player: 1表示当前操作者是玩家，0表示是敌人
+static int handle_entity_click(int x, int y, void* current, void* opponent, char* mine, char* show, int row, int col, int actual_cols, int is_current_player) {
+    
+    player* p = NULL;
+    enemy* e = NULL;
+    
+    // 根据操作者身份，进行指针类型转换
+    if (is_current_player) {
+        p = (player*)current;
+        e = (enemy*)opponent;
+        // 坐标合法性检查
+        if (x < 1 || x > row || y < 1 || y > col || 
+            (x == p->x && y == p->y) || (x == e->x && y == e->y)) {
+            return 0; 
         }
-        else
-        {
-            char bless_type = mine[index];
-            int is_bless = (bless_type == 'H' || bless_type == 'A' || bless_type == 'D');
-
-            if (is_bless)
-            {
-                // 玩家获得祝福
-                switch(bless_type) {
-                    case 'H': p->health += bless_value; break;
-                    case 'A': p->attack += bless_value; break;
-                    case 'D': p->defense += bless_value; break;
-                }
-                p->found_bless_count++;
-                printf("玩家获得 %c 祝福！\n", bless_type);
-
-                // 战斗结算：玩家攻击敌人
-                int damage_to_enemy = p->attack - e->defense;
-                if (damage_to_enemy < 0) damage_to_enemy = 0;
-                e->health -= damage_to_enemy;
-                printf("玩家攻击敌人，造成 %d 伤害。敌人血量: %d\n", damage_to_enemy, e->health);
-                
-                show[index] = bless_type;
-                need_update = 1;
-
-                if (e->health <= 0) {
-                    printf("敌人已死亡，玩家胜利！\n");
-                    game_over = 1; winner = 1;
-                }
-            }
-            else
-            {
-                // 玩家点击空地
-                expand_bless(mine, show, x, y, row, col, actual_cols);
-                need_update = 1;
-            }
+    } else {
+        e = (enemy*)current;
+        p = (player*)opponent;
+        // 坐标合法性检查
+        if (x < 1 || x > row || y < 1 || y > col || 
+            (x == e->x && y == e->y) || (x == p->x && y == p->y)) {
+            return 0; 
         }
     }
 
-        // 提前声明敌人的点击坐标，默认为 -1 (未点击)
-        int ex = -1, ey = -1;
+    int index = x * actual_cols + y;
+    if (show[index] != '*' && show[index] != 'P' && show[index] != 'E') {
+        return 0; // 重复点击
+    }
 
-        // ==========================================
-        // 第二阶段：敌人回合 (如果玩家回合没有结束游戏)
-        // ==========================================
-        if (!game_over) {
-            // 注意：这里不再是定义 int ex, ey，而是给前面声明的变量赋值
+    char bless_type = mine[index];
+    int is_bless = (bless_type == 'H' || bless_type == 'A' || bless_type == 'D');
+
+    if (is_bless) {
+        if (is_current_player) {
+            switch(bless_type) {
+                case 'H': p->health += 100; break;
+                case 'A': p->attack += 100; break;
+                case 'D': p->defense += 100; break;
+            }
+            p->found_bless_count++;
+        } else {
+            switch(bless_type) {
+                case 'H': e->health += 100; break;
+                case 'A': e->attack += 100; break;
+                case 'D': e->defense += 100; break;
+            }
+            e->found_bless_count++;
+        }
+
+        // 战斗结算：攻击对手
+        int damage = 0;
+        if (is_current_player) {
+            damage = p->attack - e->defense;
+            if (damage < 0) damage = 0;
+            e->health -= damage;
+        } else {
+            damage = e->attack - p->defense;
+            if (damage < 0) damage = 0;
+            p->health -= damage;
+        }
+        
+        show[index] = bless_type;
+
+        // 判断对手是否死亡
+        if ((!is_current_player && p->health <= 0) || (is_current_player && e->health <= 0)) {
+            return 2; // 当前实体获胜
+        }
+        return 1; // 需要更新
+    } else {
+        // 点击空地
+        expand_bless(mine, show, x, y, row, col, actual_cols);
+        return 1; 
+    }
+}
+
+// game_mode: 0=人机对战, 1=匹配对战(PVP)
+int process_click(int room_id, int game_mode, int x, int y, player* p, enemy* e, char* mine, char* show, int row, int col, int actual_cols)
+{
+    int game_over = 0;
+    int winner = 0;
+    int need_update = 0;
+    int ex = -1, ey = -1; // 记录第二行动方的坐标
+
+    // ==========================================
+    // 第一阶段：处理当前传入的坐标 (玩家1 或 匹配模式的任意一方)
+    // ==========================================
+    int p_result = handle_entity_click(x, y, p, e, mine, show, row, col, actual_cols, 1);
+    
+    if (p_result == 2) {
+        printf("玩家1获胜！\n");
+        game_over = 1; winner = 1; need_update = 1;
+    } else if (p_result == 1) {
+        need_update = 1;
+    }
+
+    // ==========================================
+    // 第二阶段：人机模式下的AI回合，或匹配模式下的等待
+    // ==========================================
+    if (!game_over) {
+        if (game_mode == 0) {
+            // --- 人机对战：AI自动行动 ---
             enemy_ai_choose(mine, show, e, row, col, actual_cols, &ex, &ey);
-    
+            
             if (ex != -1 && ey != -1) {
-                int e_index = ex * actual_cols + ey;
-                char e_bless_type = mine[e_index];
-                int e_is_bless = (e_bless_type == 'H' || e_bless_type == 'A' || e_bless_type == 'D');
-    
-                if (e_is_bless) {
-                    // 敌人获得祝福
-                    switch(e_bless_type) {
-                        case 'H': e->health += bless_value; break;
-                        case 'A': e->attack += bless_value; break;
-                        case 'D': e->defense += bless_value; break;
-                    }
-                    e->found_bless_count++;
-                    printf("敌人获得 %c 祝福！\n", e_bless_type);
-    
-                    // 战斗结算：敌人攻击玩家
-                    int damage_to_player = e->attack - p->defense;
-                    if (damage_to_player < 0) damage_to_player = 0;
-                    p->health -= damage_to_player;
-                    printf("敌人攻击玩家，造成 %d 伤害。玩家血量: %d\n", damage_to_player, p->health);
-    
-                    show[e_index] = e_bless_type;
-                    need_update = 1;
-    
-                    if (p->health <= 0) {
-                        printf("玩家已死亡，敌人胜利！\n");
-                        game_over = 1; winner = 2;
-                    }
-                } else {
-                    // 敌人点击空地
-                    expand_bless(mine, show, ex, ey, row, col, actual_cols);
+                // 注意：此时当前操作者是敌人，对手是玩家，标志位传 0
+                int e_result = handle_entity_click(ex, ey, e, p, mine, show, row, col, actual_cols, 0);
+                
+                if (e_result == 2) {
+                    printf("敌人获胜！\n");
+                    game_over = 1; winner = 2; need_update = 1;
+                } else if (e_result == 1) {
                     need_update = 1;
                 }
             }
         }
-    
-        // ==========================================
-        // 第三阶段：状态更新与文件写入
-        // ==========================================
-        if (need_update || game_over) {
-            // 检查是否找齐所有祝福
-            if (!game_over && (p->found_bless_count + e->found_bless_count >= blesscount)) {
-                printf("所有祝福已找齐！\n");
-                game_over = 1;
-                winner = (p->found_bless_count > e->found_bless_count) ? 1 : 2; 
-            }
-    
-            displayboard(show, row, col, actual_cols);
-            writemap(show, row, col, actual_cols, p, e);
-            
-            // 记录敌人点击的坐标传给 writestatus
-            int e_cx = -1, e_cy = -1; 
-            if (ex != -1 && ey != -1) { 
-                e_cx = ex; 
-                e_cy = ey; 
-            }
-            
-            writestatus(p, e, game_over, winner, e_cx, e_cy);
+        } else {
+            // --- 匹配对战：等待玩家2的点击 ---
+            // 此时 ex, ey 保持为 -1，玩家2的点击将由前端再次调用本函数传入
+            // 你可以通过前端传入的坐标或扩展参数来区分是玩家1还是玩家2的请求
         }
-    
-        return game_over;
+
+    // ==========================================
+    // 第三阶段：状态更新与文件写入
+    // ==========================================
+    if (need_update || game_over) {
+        // 检查是否找齐所有祝福
+        if (!game_over && (p->found_bless_count + e->found_bless_count >= blesscount)) {
+            printf("所有祝福已找齐！\n");
+            game_over = 1;
+            winner = (p->found_bless_count > e->found_bless_count) ? 1 : 2; 
+        }
+
+        displayboard(show, row, col, actual_cols);
+        writemap(show, row, col, actual_cols, p, e, room_id);
+        
+        int e_cx = -1, e_cy = -1; 
+        if (ex != -1 && ey != -1) { 
+            e_cx = ex; 
+            e_cy = ey; 
+        }
+        
+        writestatus(p, e, game_over, winner, e_cx, e_cy, room_id);
+    }
+
+    return game_over;
 }
