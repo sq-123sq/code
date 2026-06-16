@@ -308,8 +308,8 @@ void handle_client_request(SOCKET client_socket) {
         // 3. 解析 JSON 获取坐标和模式
         cJSON *req = cJSON_Parse(json_buf);
         int x = -1, y = -1;
-        int req_mode = -1;  
-        int req_room_id = 0;
+        int req_mode = 0;     // 默认人机
+        int req_room_id = 1;  // 默认房间1
 
         if (req) {
             cJSON *x_item = cJSON_GetObjectItem(req, "x");
@@ -318,117 +318,101 @@ void handle_client_request(SOCKET client_socket) {
             cJSON *room_item = cJSON_GetObjectItem(req, "room_id");
             if (cJSON_IsNumber(x_item)) x = x_item->valueint;
             if (cJSON_IsNumber(y_item)) y = y_item->valueint;
-            if (cJSON_IsNumber(mode_item)) req_mode = mode_item->valueint;
+            if (cJSON_IsString(mode_item) && strcmp(mode_item->valuestring, "pvp") == 0) req_mode = 1;
             if (cJSON_IsNumber(room_item)) req_room_id = room_item->valueint;
             cJSON_Delete(req);
         }
         free(json_buf);
 
         // ==========================================
-        // 4. 模式切换与初始化
+        // 4. 查找或初始化房间 (修复核心 Bug)
         // ==========================================
-        if (req_mode != -1 && req_mode != g_mode) {
-            g_mode = req_mode;
-            if (g_mode == 0) {
+        int idx = -1;
+        if (req_mode == 0) { // PVE 模式
+            idx = 0;
+            // 关键修复：只要 g_p[0] 是空的，说明没初始化，必须初始化！
+            // 不能依赖 g_mode 是否变化，因为服务器重启后第一次请求必须初始化
+            if (g_p[idx] == NULL) {
+                printf("[C Server] PVE房间未初始化，开始初始化...\n");
                 init_game_pve();
-            } else {
-                g_pvp_room_id = req_room_id;
-                init_game_pvp(g_pvp_room_id);
+            }
+        } else { // PVP 模式
+            idx = find_room_index(req_room_id);
+            if (idx == -1) {
+                printf("[C Server] PVP房间 %d 未初始化，开始初始化...\n", req_room_id);
+                init_game_pvp(req_room_id);
+                idx = find_room_index(req_room_id);
             }
         }
 
         // ==========================================
-        // 5. 执行游戏逻辑 (模式无关)
+        // 5. 执行游戏逻辑
         // ==========================================
         int game_status = 0;
         int winner = 0;
-        int idx = (g_mode == 0) ? 0 : find_room_index(g_pvp_room_id);
 
-        if (idx != -1 && x != -1 && y != -1) {
-            game_status = process_click(req_room_id, g_mode, x, y, g_p[idx], g_e[idx], g_mine[idx], g_show[idx], ROW, COL, COLS);
-            // winner = g_p[idx]->room_id; 
-            // g_p[idx]->room_id = (g_mode == 0) ? 0 : g_pvp_room_id; // 恢复正确的 room_id
+        if (idx != -1 && g_p[idx] != NULL && x != -1 && y != -1) {
+            game_status = process_click(req_room_id, req_mode, x, y, g_p[idx], g_e[idx], g_mine[idx], g_show[idx], ROW, COL, COLS);
         }
 
         // ==========================================
-        // 6. 状态更新与文件写入 (模式分支)
+        // 6. 写入文件存档 (可选，仅用于断线恢复或调试)
         // ==========================================
-        if (game_status == 1 || (x != -1 && y != -1)) {
-            if (g_mode == 0) {
-                writemap(g_show[idx], ROW, COL, COLS, g_p[idx], g_e[idx], 0);
-                writestatus(g_p[idx], g_e[idx], game_status, winner, -1, -1, 0);
-            } else {
-                writemap(g_show[idx], ROW, COL, COLS, g_p[idx], g_e[idx], g_pvp_room_id);
-                writestatus(g_p[idx], g_e[idx], game_status, winner, -1, -1, g_pvp_room_id);
-            }
+        if (idx != -1 && (game_status == 1 || (x != -1 && y != -1))) {
+            writemap(g_show[idx], ROW, COL, COLS, g_p[idx], g_e[idx], req_room_id);
+            writestatus(g_p[idx], g_e[idx], game_status, winner, -1, -1, req_room_id);
         }
 
         // ==========================================
-        // 7. 构造响应 JSON (模式分支读取不同文件)
+        // 7. 从内存构造响应 JSON (绝对不要读文件！)
         // ==========================================
         cJSON *res = cJSON_CreateObject();
         cJSON_AddNumberToObject(res, "status", game_status);
 
-        char map_file[64], status_file[64];
-        if (g_mode == 0) {
-            sprintf(map_file, "map.txt");
-            sprintf(status_file, "status.txt");
-        } else {
-            sprintf(map_file, "map_%d.txt", g_pvp_room_id);
-            sprintf(status_file, "status_%d.txt", g_pvp_room_id);
-        }
-
-        // 读取并添加 map 数据
-        FILE *map_file_ptr = fopen(map_file, "r");
-        if (map_file_ptr) {
-            fseek(map_file_ptr, 0, SEEK_END);
-            long file_size = ftell(map_file_ptr);
-            fseek(map_file_ptr, 0, SEEK_SET);
-            if (file_size > 0) {
-                char *map_buf = (char*)malloc(file_size + 1);
-                if (map_buf) {
-                    fread(map_buf, 1, file_size, map_file_ptr);
-                    map_buf[file_size] = '\0';
-                    cJSON *map_json = cJSON_Parse(map_buf);
-                    cJSON_AddItemToObject(res, "map", map_json ? map_json : cJSON_CreateArray());
-                    free(map_buf);
-                } else {
-                    cJSON_AddItemToObject(res, "map", cJSON_CreateArray());
+        if (idx != -1 && g_p[idx] != NULL) {
+            // --- 构造地图数组 ---
+            cJSON *map_arr = cJSON_CreateArray();
+            for (int r = 0; r < ROW; r++) {
+                cJSON *row_arr = cJSON_CreateArray();
+                for (int c = 0; c < COL; c++) {
+                    int index = r * COLS + c;
+                    char val[2] = {g_show[idx][index], '\0'}; // 从内存读取
+                    cJSON_AddItemToArray(row_arr, cJSON_CreateString(val));
                 }
-            } else {
-                cJSON_AddItemToObject(res, "map", cJSON_CreateArray());
+                cJSON_AddItemToArray(map_arr, row_arr);
             }
-            fclose(map_file_ptr);
+            cJSON_AddItemToObject(res, "map", map_arr);
+
+            // --- 构造状态对象 ---
+            cJSON *status_data = cJSON_CreateObject();
+            cJSON_AddNumberToObject(status_data, "game_over", game_status);
+            cJSON_AddNumberToObject(status_data, "winner", winner);
+
+            // 玩家对象 (从内存读取)
+            cJSON *player_obj = cJSON_CreateObject();
+            cJSON_AddNumberToObject(player_obj, "health", g_p[idx]->health);
+            cJSON_AddNumberToObject(player_obj, "attack", g_p[idx]->attack);
+            cJSON_AddNumberToObject(player_obj, "defense", g_p[idx]->defense);
+            cJSON_AddNumberToObject(player_obj, "x", g_p[idx]->x);
+            cJSON_AddNumberToObject(player_obj, "y", g_p[idx]->y);
+            cJSON_AddItemToObject(status_data, "player", player_obj);
+
+            // 敌人对象 (从内存读取)
+            cJSON *enemy_obj = cJSON_CreateObject();
+            cJSON_AddNumberToObject(enemy_obj, "health", g_e[idx]->health);
+            cJSON_AddNumberToObject(enemy_obj, "attack", g_e[idx]->attack);
+            cJSON_AddNumberToObject(enemy_obj, "defense", g_e[idx]->defense);
+            cJSON_AddNumberToObject(enemy_obj, "x", g_e[idx]->x);
+            cJSON_AddNumberToObject(enemy_obj, "y", g_e[idx]->y);
+            cJSON_AddItemToObject(status_data, "enemy", enemy_obj);
+
+            cJSON_AddItemToObject(res, "status_data", status_data);
+            
+            printf("[C Server] 返回数据: P_HP=%d, E_HP=%d\n", g_p[idx]->health, g_e[idx]->health);
+
         } else {
+            // 房间初始化失败时的兜底返回
             cJSON_AddItemToObject(res, "map", cJSON_CreateArray());
-        }
-
-        // 读取并添加 status 数据
-        FILE *status_file_ptr = fopen(status_file, "r");
-        if (status_file_ptr) {
-            fseek(status_file_ptr, 0, SEEK_END);
-            long file_size = ftell(status_file_ptr);
-            fseek(status_file_ptr, 0, SEEK_SET);
-            if (file_size > 0) {
-                char *status_buf = (char*)malloc(file_size + 1);
-                if (status_buf) {
-                    fread(status_buf, 1, file_size, status_file_ptr);
-                    status_buf[file_size] = '\0';
-                    cJSON *status_json = cJSON_Parse(status_buf);
-                    if (status_json) {
-                        cJSON_AddItemToObject(res, "status_data", status_json);
-                    } else {
-                        cJSON_AddItemToObject(res, "status_data", cJSON_Parse("{\"game_over\":0, \"winner\":0, \"player\":{\"health\":0}, \"enemy\":{\"health\":0}}"));
-                    }
-                    free(status_buf);
-                } else {
-                    cJSON_AddItemToObject(res, "status_data", cJSON_Parse("{\"game_over\":0, \"winner\":0, \"player\":{\"health\":0}, \"enemy\":{\"health\":0}}"));
-                }
-            } else {
-                cJSON_AddItemToObject(res, "status_data", cJSON_Parse("{\"game_over\":0, \"winner\":0, \"player\":{\"health\":0}, \"enemy\":{\"health\":0}}"));
-            }
-            fclose(status_file_ptr);
-        } else {
             cJSON_AddItemToObject(res, "status_data", cJSON_Parse("{\"game_over\":0, \"winner\":0, \"player\":{\"health\":0}, \"enemy\":{\"health\":0}}"));
         }
 
@@ -445,11 +429,11 @@ void handle_client_request(SOCKET client_socket) {
 
         // 9. 游戏结束重置
         if (game_status == 1) {
-            if (g_mode == 0) {
+            if (req_mode == 0) {
                 printf("人机对战结束，重置地图...\n");
                 init_game_pve(); 
             } else {
-                printf("匹配对战房间 %d 结束，释放资源...\n", g_pvp_room_id);
+                printf("匹配对战房间 %d 结束，释放资源...\n", req_room_id);
                 if (idx != -1) {
                     if (g_mine[idx]) free(g_mine[idx]);
                     if (g_show[idx]) free(g_show[idx]);
