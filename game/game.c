@@ -685,16 +685,18 @@ void enemy_ai_choose(char* mine, char* show, enemy* e, int row, int col, int act
 // 辅助函数：处理单个实体的点击逻辑
 // current: 当前操作的实体, opponent: 对手
 // is_current_player: 1表示当前操作者是玩家，0表示是敌人
-static int handle_entity_click(int x, int y, void* current, void* opponent, char* mine, char* show, int row, int col, int actual_cols, int is_current_player) {
+// 去掉 is_current_player 参数，让函数自己通过指针判断身份
+static int handle_entity_click(int x, int y, void* current, void* opponent, char* mine, char* show, int row, int col, int actual_cols, player* global_p) {
+    
+    // 通过比较指针地址，判断当前操作者是不是玩家
+    int is_current_player = (current == global_p) ? 1 : 0;
     
     player* p = NULL;
     enemy* e = NULL;
     
-    // 根据操作者身份，进行指针类型转换
     if (is_current_player) {
         p = (player*)current;
         e = (enemy*)opponent;
-        // 坐标合法性检查
         if (x < 1 || x > row || y < 1 || y > col || 
             (x == p->x && y == p->y) || (x == e->x && y == e->y)) {
             return 0; 
@@ -702,7 +704,6 @@ static int handle_entity_click(int x, int y, void* current, void* opponent, char
     } else {
         e = (enemy*)current;
         p = (player*)opponent;
-        // 坐标合法性检查
         if (x < 1 || x > row || y < 1 || y > col || 
             (x == e->x && y == e->y) || (x == p->x && y == p->y)) {
             return 0; 
@@ -711,7 +712,7 @@ static int handle_entity_click(int x, int y, void* current, void* opponent, char
 
     int index = x * actual_cols + y;
     if (show[index] != '*' && show[index] != 'P' && show[index] != 'E') {
-        return 0; // 重复点击
+        return 0; 
     }
 
     char bless_type = mine[index];
@@ -734,7 +735,6 @@ static int handle_entity_click(int x, int y, void* current, void* opponent, char
             e->found_bless_count++;
         }
 
-        // 战斗结算：攻击对手
         int damage = 0;
         if (is_current_player) {
             damage = p->attack - e->defense;
@@ -748,69 +748,54 @@ static int handle_entity_click(int x, int y, void* current, void* opponent, char
         
         show[index] = bless_type;
 
-        // 判断对手是否死亡
         if ((!is_current_player && p->health <= 0) || (is_current_player && e->health <= 0)) {
-            return 2; // 当前实体获胜
+            return 2; 
         }
-        return 1; // 需要更新
+        return 1; 
     } else {
-        // 点击空地
         expand_bless(mine, show, x, y, row, col, actual_cols);
         return 1; 
     }
 }
-
 // game_mode: 0=人机对战, 1=匹配对战(PVP)
 int process_click(int room_id, int game_mode, int x, int y, player* p, enemy* e, char* mine, char* show, int row, int col, int actual_cols)
 {
     int game_over = 0;
     int winner = 0;
     int need_update = 0;
-    int ex = -1, ey = -1; // 记录第二行动方的坐标
+    int ex = -1, ey = -1; 
 
-    // ==========================================
-    // 第一阶段：处理当前传入的坐标 (玩家1 或 匹配模式的任意一方)
-    // ==========================================
-    int p_result = handle_entity_click(x, y, p, e, mine, show, row, col, actual_cols, 1);
+    // 第一阶段：玩家点击，传入 global_p 作为最后一个参数
+    int p_result = handle_entity_click(x, y, p, e, mine, show, row, col, actual_cols, p);
     
     if (p_result == 2) {
-        printf("玩家1获胜！\n");
         game_over = 1; winner = 1; need_update = 1;
     } else if (p_result == 1) {
         need_update = 1;
     }
 
-    // ==========================================
-    // 第二阶段：人机模式下的AI回合，或匹配模式下的等待
-    // ==========================================
-    if (!game_over) {
-        if (game_mode == 0) {
-            // --- 人机对战：AI自动行动 ---
-            enemy_ai_choose(mine, show, e, row, col, actual_cols, &ex, &ey);
+    // 第二阶段：人机模式下的AI回合
+    if (!game_over && game_mode == 0) {
+        enemy_ai_choose(mine, show, e, row, col, actual_cols, &ex, &ey);
+        
+        if (ex != -1 && ey != -1) {
+            // 传入 global_p 作为最后一个参数
+            int e_result = handle_entity_click(ex, ey, e, p, mine, show, row, col, actual_cols, p);
             
-            if (ex != -1 && ey != -1) {
-                // 注意：此时当前操作者是敌人，对手是玩家，标志位传 0
-                int e_result = handle_entity_click(ex, ey, e, p, mine, show, row, col, actual_cols, 0);
-                
-                if (e_result == 2) {
-                    printf("敌人获胜！\n");
-                    game_over = 1; winner = 2; need_update = 1;
-                } else if (e_result == 1) {
-                    need_update = 1;
-                }
+            if (e_result == 2) {
+                game_over = 1; winner = 2; need_update = 1;
+            } else if (e_result == 1) {
+                need_update = 1;
             }
         }
-        } else {
+    } else {
             // --- 匹配对战：等待玩家2的点击 ---
-            // 此时 ex, ey 保持为 -1，玩家2的点击将由前端再次调用本函数传入
-            // 你可以通过前端传入的坐标或扩展参数来区分是玩家1还是玩家2的请求
+            // 此时 ex, ey 保持为 -1
         }
-
     // ==========================================
     // 第三阶段：状态更新与文件写入
     // ==========================================
     if (need_update || game_over) {
-        // 检查是否找齐所有祝福
         if (!game_over && (p->found_bless_count + e->found_bless_count >= blesscount)) {
             printf("所有祝福已找齐！\n");
             game_over = 1;
@@ -831,3 +816,4 @@ int process_click(int room_id, int game_mode, int x, int y, player* p, enemy* e,
 
     return game_over;
 }
+
