@@ -372,9 +372,9 @@ void handle_client_request(SOCKET client_socket) {
         if (idx != -1 && g_p[idx] != NULL) {
             // --- 构造地图数组 ---
             cJSON *map_arr = cJSON_CreateArray();
-            for (int r = 0; r < ROW; r++) {
+            for (int r = 1; r <= ROW; r++) {
                 cJSON *row_arr = cJSON_CreateArray();
-                for (int c = 0; c < COL; c++) {
+                for (int c = 1; c <= COL; c++) {
                     int index = r * COLS + c;
                     char val[2] = {g_show[idx][index], '\0'}; // 从内存读取
                     cJSON_AddItemToArray(row_arr, cJSON_CreateString(val));

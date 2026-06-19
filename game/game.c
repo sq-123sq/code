@@ -765,7 +765,9 @@ int process_click(int room_id, int game_mode, int x, int y, player* p, enemy* e,
     int need_update = 0;
     int ex = -1, ey = -1; 
 
-    // 第一阶段：玩家点击，传入 global_p 作为最后一个参数
+    // ==========================================
+    // 第一阶段：玩家1点击
+    // ==========================================
     int p_result = handle_entity_click(x, y, p, e, mine, show, row, col, actual_cols, p);
     
     if (p_result == 2) {
@@ -774,24 +776,29 @@ int process_click(int room_id, int game_mode, int x, int y, player* p, enemy* e,
         need_update = 1;
     }
 
-    // 第二阶段：人机模式下的AI回合
-    if (!game_over && game_mode == 0) {
-        enemy_ai_choose(mine, show, e, row, col, actual_cols, &ex, &ey);
-        
-        if (ex != -1 && ey != -1) {
-            // 传入 global_p 作为最后一个参数
-            int e_result = handle_entity_click(ex, ey, e, p, mine, show, row, col, actual_cols, p);
+    // ==========================================
+    // 第二阶段：人机模式下的AI回合，或匹配模式下的等待
+    // ==========================================
+    if (!game_over) {
+        if (game_mode == 0) {
+            // --- 人机对战：AI自动行动 ---
+            enemy_ai_choose(mine, show, e, row, col, actual_cols, &ex, &ey);
             
-            if (e_result == 2) {
-                game_over = 1; winner = 2; need_update = 1;
-            } else if (e_result == 1) {
-                need_update = 1;
+            if (ex != -1 && ey != -1) {
+                int e_result = handle_entity_click(ex, ey, e, p, mine, show, row, col, actual_cols, p);
+                
+                if (e_result == 2) {
+                    game_over = 1; winner = 2; need_update = 1;
+                } else if (e_result == 1) {
+                    need_update = 1;
+                }
             }
-        }
-    } else {
+        } else {
             // --- 匹配对战：等待玩家2的点击 ---
             // 此时 ex, ey 保持为 -1
         }
+    } // 【关键修复】：这里必须闭合第二阶段的 if (!game_over)
+
     // ==========================================
     // 第三阶段：状态更新与文件写入
     // ==========================================
@@ -816,4 +823,3 @@ int process_click(int room_id, int game_mode, int x, int y, player* p, enemy* e,
 
     return game_over;
 }
-
